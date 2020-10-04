@@ -1,42 +1,108 @@
 "use strict";
 
-let objCreator = function () {
-  const getRandom = (min, max) => Math.round(Math.random() * (max - min) + min);
-  const getAvatar = i => `img/avatars/user0${i}.png`;
-  const getCheckin = () => [`12:00`, `13:00`, `14:00`][getRandom(0, 3)];
-  const getType = () => [`palace`, `flat`, `house`, `bungalow`][getRandom(0, 4)];
-  const getFeatures = () => [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`].filter(() => Math.random() > 0.5);
-  const getPhotos = () => [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`].filter(() => Math.random() > 0.5);
+const COUNT_PINS = 8;
+const TITLES = [`Title1`, `Title2`, `Title3`, `Title4`, `Title5`];
+const TIMES = [`12:00`, `13:00`, `14:00`];
+const TYPES = [`palace`, `flat`, `house`, `bungalow`];
+const PRISES = [1000, 2000, 3000, 4000];
+const FEATURES = [`1wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
 
-  const result = [];
+const pinsContainer = document.querySelector(`.map__pins`);
+const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+const mapBlock = document.querySelector(`.map--faded`);
+mapBlock.classList.remove(`map--faded`);
 
-  for (let i = 0; i < 8; i++) {
-    const obj = {
-      author: {
-        avatar: getAvatar(i + 1),
-      },
-      offer: {
-        title: `some string`,
-        address: `600, 350`,
-        price: 1000,
-        type: getType(),
-        rooms: 4,
-        guests: 25,
-        checkin: getCheckin(),
-        checkout: getCheckin(),
-        features: getFeatures(),
-        description: `Some description`,
-        photos: getPhotos()
-      },
-      locations: {
-        x: getRandom(130, 630),
-        y: getRandom(130, 630),
-      }
-    };
-    result.push(obj);
-  }
-  return result;
+const LocationLimit = {
+  X_MIN: 0,
+  X_MAX: mapBlock.offsetWidth,
+  Y_MIN: 130,
+  Y_MAX: 630
 };
 
-let mapBlock = document.querySelectorAll(`.map--faded`);
+const getRandomNumber = (min, max) => {
+  return Math.round(Math.random() * (max - min) + min);
+};
+
+const getRandomItem = (items) => {
+  const randomValue = getRandomNumber(0, items.length);
+  return items[randomValue];
+};
+
+const getPin = (index) => {
+  return {
+    author: {
+      avatar: `img/avatars/user0${index}.png`,
+    },
+    offer: {
+      title: getRandomItem(TITLES),
+      address: `600, 350`,
+      price: getRandomItem(PRISES),
+      type: getRandomItem(TYPES),
+      checkin: getRandomItem(TIMES),
+      rooms: 4,
+      guests: 2,
+      checkout: getRandomItem(TIMES),
+      features: getFeatures(FEATURES),
+      description: `Some description`,
+      photos: getPhotos(),
+    },
+    locations: {
+      x: getRandomNumber(LocationLimit.X_MIN, LocationLimit.X_MAX),
+      y: getRandomNumber(LocationLimit.Y_MIN, LocationLimit.Y_MAX),
+    }
+  };
+};
+
+const getFeatures = (features) => {
+  const randomValue = getRandomNumber(0, features.length);
+  let massFeatures = [];
+  for (let i = 0; i < randomValue; i++) {
+    massFeatures.push(features[Math.random(0, features.length)]);
+  }
+
+  return massFeatures;
+};
+
+const getPhotos = () => {
+  let quantityPhotos = 3;
+  let photos = [];
+  photos.length = Math.random(0, quantityPhotos);
+  for (let i = 1; i <= photos.length; i++) {
+    let photo = `http://o0.github.io/assets/images/tokyo/hotel${i}.jpg`;
+    photos.push(photo);
+  } return photos;
+};
+
+const getPins = (count) => {
+  const pins = [];
+
+  for (let i = 0; i < count; i++) {
+    const pin = getPin(i);
+    pins.push(pin);
+  }
+
+  return pins;
+};
+
+const getPinsFragment = (pins) => {
+  const fragment = document.createDocumentFragment();
+
+  for (let i = 0; i < pins.length; i++) {
+    const pin = pins[i];
+    var element = pinTemplate.cloneNode(true);
+    element.querySelector(`img`).src = pin.author.avatar;
+
+    fragment.appendChild(element);
+  }
+
+  return fragment;
+};
+
+const renderPins = () => {
+  const pins = getPins(COUNT_PINS);
+  const pinsFragment = getPinsFragment(pins);
+  pinsContainer.appendChild(pinsFragment);
+};
+
 mapBlock.classList.remove(`map--faded`);
+renderPins();
