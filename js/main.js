@@ -31,7 +31,7 @@ const getRandomItem = (items) => {
 const getPin = (index) => {
   return {
     author: {
-      avatar: `img/avatars/user0${index}.png`,
+      avatar: `img/avatars/user0${index + 1}.png`,
     },
     offer: {
       title: getRandomItem(TITLES),
@@ -56,6 +56,7 @@ const getPin = (index) => {
 const getFeatures = (features) => {
   const randomValue = getRandomNumber(0, features.length);
   let massFeatures = [];
+
   for (let i = 0; i < randomValue; i++) {
     massFeatures.push(features[Math.random(0, features.length)]);
   }
@@ -66,11 +67,13 @@ const getFeatures = (features) => {
 const getPhotos = () => {
   let quantityPhotos = 3;
   let photos = [];
-  photos.length = Math.random(0, quantityPhotos);
-  for (let i = 1; i <= photos.length; i++) {
+
+  for (let i = 1; i <= Math.random(0, quantityPhotos); i++) {
     let photo = `http://o0.github.io/assets/images/tokyo/hotel${i}.jpg`;
     photos.push(photo);
-  } return photos;
+  }
+
+  return photos;
 };
 
 const getPins = (count) => {
@@ -98,6 +101,11 @@ const getPinsFragment = (pins) => {
   return fragment;
 };
 
+/* const locationPin = (pin) => {
+  pin.style.left = `locations.x`.px;
+  pin.style.bottom = `locations.y`.px;
+};*/
+
 const renderPins = () => {
   const pins = getPins(COUNT_PINS);
   const pinsFragment = getPinsFragment(pins);
@@ -106,3 +114,4 @@ const renderPins = () => {
 
 mapBlock.classList.remove(`map--faded`);
 renderPins();
+/* locationPin();*/
