@@ -7,10 +7,13 @@ const TYPES = [`palace`, `flat`, `house`, `bungalow`];
 const PRISES = [1000, 2000, 3000, 4000];
 const FEATURES = [`1wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
 
+const quantityPhotos = 3;
 const pinsContainer = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 const mapBlock = document.querySelector(`.map--faded`);
 mapBlock.classList.remove(`map--faded`);
+const widthPin = pinTemplate.offsetWidth;
+const heigthPin = pinTemplate.offsetHeigth;
 
 const LocationLimit = {
   X_MIN: 0,
@@ -55,17 +58,14 @@ const getPin = (index) => {
 
 const getFeatures = (features) => {
   const randomValue = getRandomNumber(0, features.length);
-  let massFeatures = [];
-
   for (let i = 0; i < randomValue; i++) {
-    massFeatures.push(features[Math.random(0, features.length)]);
+    features.push(features[Math.random(0, features.length)]);
   }
 
-  return massFeatures;
+  return features;
 };
 
 const getPhotos = () => {
-  let quantityPhotos = 3;
   let photos = [];
 
   for (let i = 1; i <= Math.random(0, quantityPhotos); i++) {
@@ -95,16 +95,13 @@ const getPinsFragment = (pins) => {
     var element = pinTemplate.cloneNode(true);
     element.querySelector(`img`).src = pin.author.avatar;
 
+    element.style.left = getPin.locations.x - widthPin;
+    element.style.bottom = getPin.locations.y - heigthPin;
     fragment.appendChild(element);
   }
 
   return fragment;
 };
-
-/* const locationPin = (pin) => {
-  pin.style.left = `locations.x`.px;
-  pin.style.bottom = `locations.y`.px;
-};*/
 
 const renderPins = () => {
   const pins = getPins(COUNT_PINS);
