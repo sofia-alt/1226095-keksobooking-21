@@ -20,9 +20,9 @@ const LocationLimit = {
   Y_MAX: 630
 };
 
-const sizePin = {
-  width: 50,
-  heigth: 70
+const SizePin = {
+  WIDTH: 50,
+  HEIGHT: 70
 };
 
 const getRandomNumber = (min, max) => {
@@ -98,8 +98,8 @@ const getPinsFragment = (pins) => {
     var element = pinTemplate.cloneNode(true);
     element.querySelector(`img`).src = pin.author.avatar;
 
-    element.style.left = `${pin.locations.x - sizePin.width}px`;
-    element.style.top = `${pin.locations.y - sizePin.heigth}px`;
+    element.style.left = `${pin.locations.x - Math.floor(SizePin.WIDTH / 2)}px`;
+    element.style.top = `${pin.locations.y - Math.floor(SizePin.HEIGHT / 2)}px`;
     fragment.appendChild(element);
   }
 
