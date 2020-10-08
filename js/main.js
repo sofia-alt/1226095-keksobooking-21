@@ -99,7 +99,7 @@ const getPinsFragment = (pins) => {
     element.querySelector(`img`).src = pin.author.avatar;
 
     element.style.left = `${pin.locations.x - Math.floor(SizePin.WIDTH / 2)}px`;
-    element.style.top = `${pin.locations.y - Math.floor(SizePin.HEIGHT / 2)}px`;
+    element.style.top = `${pin.locations.y - SizePin.HEIGHT}px`;
     fragment.appendChild(element);
   }
 
