@@ -95,8 +95,8 @@ const getPinsFragment = (pins) => {
     var element = pinTemplate.cloneNode(true);
     element.querySelector(`img`).src = pin.author.avatar;
 
-    element.style.left = getPin.locations.x - widthPin;
-    element.style.bottom = getPin.locations.y - heigthPin;
+    element.style.left = `${pin.locations.x - widthPin}px`;
+    element.style.top = `${pin.locations.y - heigthPin}px`;
     fragment.appendChild(element);
   }
 
@@ -111,4 +111,3 @@ const renderPins = () => {
 
 mapBlock.classList.remove(`map--faded`);
 renderPins();
-/* locationPin();*/
