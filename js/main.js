@@ -12,14 +12,17 @@ const pinsContainer = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 const mapBlock = document.querySelector(`.map--faded`);
 mapBlock.classList.remove(`map--faded`);
-const widthPin = pinTemplate.offsetWidth;
-const heigthPin = pinTemplate.offsetHeigth;
 
 const LocationLimit = {
   X_MIN: 0,
   X_MAX: mapBlock.offsetWidth,
   Y_MIN: 130,
   Y_MAX: 630
+};
+
+const sizePin = {
+  width: 50,
+  heigth: 70
 };
 
 const getRandomNumber = (min, max) => {
@@ -95,8 +98,8 @@ const getPinsFragment = (pins) => {
     var element = pinTemplate.cloneNode(true);
     element.querySelector(`img`).src = pin.author.avatar;
 
-    element.style.left = `${pin.locations.x - widthPin}px`;
-    element.style.top = `${pin.locations.y - heigthPin}px`;
+    element.style.left = `${pin.locations.x - sizePin.width}px`;
+    element.style.top = `${pin.locations.y - sizePin.heigth}px`;
     fragment.appendChild(element);
   }
 
