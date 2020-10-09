@@ -10,6 +10,7 @@ const FEATURES = [`1wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `condi
 const quantityPhotos = 3;
 const pinsContainer = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+const popupTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const mapBlock = document.querySelector(`.map--faded`);
 mapBlock.classList.remove(`map--faded`);
 
@@ -106,11 +107,27 @@ const getPinsFragment = (pins) => {
   return fragment;
 };
 
+const getPopup = (pins) => {
+  if (pins.length === 0) {
+    return;
+  }
+  const pin = pins[0];
+  var popupElement = popupTemplate.cloneNode(true);
+
+  popupElement.querySelector(`.popup__title`).textContent = pin.title;
+  popupElement.querySelector(`.popup__text--address`).textContent = pin.address;
+
+  mapBlock.appendChild(popupElement);
+};
+
+
 const renderPins = () => {
   const pins = getPins(COUNT_PINS);
   const pinsFragment = getPinsFragment(pins);
+  const popups = getPopup(pins);
   pinsContainer.appendChild(pinsFragment);
 };
 
-mapBlock.classList.remove(`map--faded`);
 renderPins();
+
+mapBlock.classList.remove(`map--faded`);
