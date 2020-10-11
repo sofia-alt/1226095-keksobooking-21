@@ -108,7 +108,7 @@ const getPins = (count) => {
   return pins;
 };
 
-const getPinsFragment = (pins) => {
+const renderPins = (pins) => {
   const fragment = document.createDocumentFragment();
 
   for (let i = 0; i < pins.length; i++) {
@@ -121,7 +121,7 @@ const getPinsFragment = (pins) => {
     fragment.appendChild(element);
   }
 
-  return fragment;
+  pinsContainer.appendChild(fragment);
 };
 
 const addPopupFeatures = (featuresElement, features) => {
@@ -156,7 +156,7 @@ const addPopupPhotos = (photosElement, photos) => {
   });
 };
 
-const getPopup = (pins) => {
+const renderPopup = (pins) => {
   if (pins.length === 0) {
     return;
   }
@@ -180,13 +180,12 @@ const getPopup = (pins) => {
 };
 
 
-const renderPins = () => {
+const render = () => {
   const pins = getPins(COUNT_PINS);
-  const pinsFragment = getPinsFragment(pins);
-  const popups = getPopup(pins);
-  pinsContainer.appendChild(pinsFragment);
+  renderPins(pins);
+  renderPopup(pins);
 };
 
-renderPins();
+render();
 
 mapBlock.classList.remove(`map--faded`);
