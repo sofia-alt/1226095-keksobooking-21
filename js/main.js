@@ -42,6 +42,16 @@ const offerTypes = {
   [OfferType.PALACE]: `Дворец`,
 };
 
+const sizeMainPinInactive = {
+  WIDTH: 200,
+  HEIGHT: 200
+};
+
+const sizeMainPinActive = {
+  WIDTH: 62,
+  HEIGHT: 87
+};
+
 const getRandomNumber = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
 };
@@ -188,12 +198,10 @@ const render = () => {
   renderPopup(pins);
 };
 
-pinMain.addEventListener(`mousedown`, function once() {
-  mapBlock.classList.remove(`map--faded`);
-  formInfo.classList.remove(`ad-form--disabled`);
-  render();
+pinMain.addEventListener(`mousedown`, function () {
+  if (mapBlock.classList.contains(`map--faded`)) {
+    mapBlock.classList.remove(`map--faded`);
+    formInfo.classList.remove(`ad-form--disabled`);
+    render();
+  }
 });
-
-const pinMainAdress = () => {
-  
-};
