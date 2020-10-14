@@ -11,8 +11,10 @@ const quantityPhotos = 3;
 const pinsContainer = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 const popupTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const pinMain = document.querySelector(`.map__pin--main`);
 const mapBlock = document.querySelector(`.map--faded`);
-mapBlock.classList.remove(`map--faded`);
+const formInfo = document.querySelector(`.ad-form`);
+const adressField = document.querySelector(`#address`);
 
 const LocationLimit = {
   X_MIN: 0,
@@ -186,6 +188,12 @@ const render = () => {
   renderPopup(pins);
 };
 
-render();
+pinMain.addEventListener(`mousedown`, function once() {
+  mapBlock.classList.remove(`map--faded`);
+  formInfo.classList.remove(`ad-form--disabled`);
+  render();
+});
 
-mapBlock.classList.remove(`map--faded`);
+const pinMainAdress = () => {
+  
+};
