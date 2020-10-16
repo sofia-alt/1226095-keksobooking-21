@@ -14,7 +14,7 @@ const popupTemplate = document.querySelector(`#card`).content.querySelector(`.ma
 const pinMain = document.querySelector(`.map__pin--main`);
 const mapBlock = document.querySelector(`.map--faded`);
 const formInfo = document.querySelector(`.ad-form`);
-const adressField = document.querySelector(`#address`);
+let isPageActive = false;
 
 const LocationLimit = {
   X_MIN: 0,
@@ -198,10 +198,40 @@ const render = () => {
   renderPopup(pins);
 };
 
-pinMain.addEventListener(`mousedown`, function () {
-  if (mapBlock.classList.contains(`map--faded`)) {
-    mapBlock.classList.remove(`map--faded`);
-    formInfo.classList.remove(`ad-form--disabled`);
-    render();
+
+const changeState = () => {
+
+  const setAdress = () => {
+    if (!isPageActive) {
+      document.querySelector(`#address`).value = `${pinMain.offsetLeft - Math.floor(sizeMainPinInactive.WIDTH / 2)}, ${pinMain.offsetTop - sizeMainPinInactive.HEIGHT}`;
+    } else {
+      document.querySelector(`#address`).value = `${pinMain.offsetLeft - Math.floor(sizeMainPinActive.WIDTH / 2)}, ${pinMain.offsetTop - sizeMainPinActive.HEIGHT}`;
+    }
+  };
+  setAdress();
+
+  if (!isPageActive) {
+    isPageActive = true;
+    let fieldsetForm = formInfo.getElementsByTagName(`fieldset`);
+
+    for (let i = 0; i < fieldsetForm.length; i++) {
+      fieldsetForm[i].disabled = true;
+    }
+
+    pinMain.addEventListener(`mousedown`, function () {
+      if (mapBlock.classList.contains(`map--faded`)) {
+        mapBlock.classList.remove(`map--faded`);
+        formInfo.classList.remove(`ad-form--disabled`);
+
+        for (let i = 0; i < fieldsetForm.length; i++) {
+          fieldsetForm[i].disabled = false;
+        }
+
+        render();
+      }
+      setAdress();
+    });
   }
-});
+};
+
+changeState();
