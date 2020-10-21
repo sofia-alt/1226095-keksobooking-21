@@ -14,6 +14,17 @@ const popupTemplate = document.querySelector(`#card`).content.querySelector(`.ma
 const pinMain = document.querySelector(`.map__pin--main`);
 const mapBlock = document.querySelector(`.map--faded`);
 const formInfo = document.querySelector(`.ad-form`);
+const mapFilters = document.querySelector(`.map__filters`);
+
+const fieldsetFormInfo = formInfo.getElementsByTagName(`fieldset`);
+const selectMapFilters = mapFilters.getElementsByTagName(`select`);
+
+const roomNumber = document.querySelector(`#room_number`);
+const capacity = document.querySelector(`#capacity`);
+
+const optionRoomNumber = roomNumber.getElementsByTagName(`option`);
+const optionCapacity = capacity.getElementsByTagName(`option`);
+
 let isPageActive = false;
 
 const LocationLimit = {
@@ -42,14 +53,10 @@ const offerTypes = {
   [OfferType.PALACE]: `Дворец`,
 };
 
-const sizeMainPinInactive = {
-  WIDTH: 200,
-  HEIGHT: 200
-};
-
-const sizeMainPinActive = {
-  WIDTH: 62,
-  HEIGHT: 87
+const SizeMainPin = {
+  WIDTH: 65,
+  HEIGHT: 65,
+  AFTER: 22
 };
 
 const getRandomNumber = (min, max) => {
@@ -101,7 +108,7 @@ const getFeatures = () => {
 const getPhotos = () => {
   let photos = [];
 
-  for (let i = 0; i <= getRandomNumber(0, quantityPhotos); i++) {
+  for (let i = 0; i <= getRandomNumber(0, quantityPhotos - 1); i++) {
     let photo = `http://o0.github.io/assets/images/tokyo/hotel${i + 1}.jpg`;
     photos.push(photo);
   }
@@ -168,11 +175,7 @@ const addPopupPhotos = (photosElement, photos) => {
   });
 };
 
-const renderPopup = (pins) => {
-  if (pins.length === 0) {
-    return;
-  }
-  const pin = pins[0];
+const renderPopup = (pin) => {
   var popupElement = popupTemplate.cloneNode(true);
 
   popupElement.querySelector(`.popup__title`).textContent = pin.offer.title;
@@ -195,43 +198,71 @@ const renderPopup = (pins) => {
 const render = () => {
   const pins = getPins(COUNT_PINS);
   renderPins(pins);
-  renderPopup(pins);
+  renderPopup(pins[0]);
 };
 
 
-const changeState = () => {
-
-  const setAdress = () => {
-    if (!isPageActive) {
-      document.querySelector(`#address`).value = `${pinMain.offsetLeft - Math.floor(sizeMainPinInactive.WIDTH / 2)}, ${pinMain.offsetTop - sizeMainPinInactive.HEIGHT}`;
-    } else {
-      document.querySelector(`#address`).value = `${pinMain.offsetLeft - Math.floor(sizeMainPinActive.WIDTH / 2)}, ${pinMain.offsetTop - sizeMainPinActive.HEIGHT}`;
-    }
-  };
-  setAdress();
-
-  if (!isPageActive) {
-    isPageActive = true;
-    let fieldsetForm = formInfo.getElementsByTagName(`fieldset`);
-
-    for (let i = 0; i < fieldsetForm.length; i++) {
-      fieldsetForm[i].disabled = true;
-    }
-
-    pinMain.addEventListener(`mousedown`, function () {
-      if (mapBlock.classList.contains(`map--faded`)) {
-        mapBlock.classList.remove(`map--faded`);
-        formInfo.classList.remove(`ad-form--disabled`);
-
-        for (let i = 0; i < fieldsetForm.length; i++) {
-          fieldsetForm[i].disabled = false;
-        }
-
-        render();
-      }
-      setAdress();
-    });
+const changeElementDisabledFormInfo = (elements) => {
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].disabled = !isPageActive;
   }
 };
 
-changeState();
+const changeElementDisabledMapFilters = (elements) => {
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].disabled = !isPageActive;
+  }
+};
+
+const activatePage = () => {
+  isPageActive = true;
+  mapBlock.classList.remove(`map--faded`);
+  formInfo.classList.remove(`ad-form--disabled`);
+  changeElementDisabledFormInfo(fieldsetFormInfo);
+  changeElementDisabledMapFilters(selectMapFilters);
+  updateAddress();
+  render();
+};
+
+const resetPage = () => {
+  isPageActive = false;
+  mapBlock.classList.add(`map--faded`);
+  formInfo.classList.add(`ad-form--disabled`);
+  changeElementDisabledFormInfo(fieldsetFormInfo);
+  changeElementDisabledMapFilters(selectMapFilters);
+  updateAddress();
+};
+
+const addMainPinEvent = () => {
+  pinMain.addEventListener(`mousedown`, function () {
+    if (!isPageActive) {
+      activatePage();
+    }
+  });
+};
+
+const setAddress = ({valueX, valueY}) => {
+  document.querySelector(`#address`).value = `${valueX}, ${valueY}`;
+};
+
+const getAddress = () => {
+  const valueX = pinMain.offsetLeft + Math.floor(SizeMainPin.WIDTH / 2);
+  const valueY = pinMain.offsetTop + (!isPageActive ? Math.floor(SizeMainPin.HEIGHT / 2) : Math.floor(SizeMainPin.HEIGHT + SizeMainPin.AFTER));
+
+  return {valueX, valueY};
+};
+
+const updateAddress = () => {
+  setAddress(getAddress());
+};
+
+const checkNumberHotel = () => {
+  if (!(optionRoomNumber.value === optionCapacity.value)) {
+    optionRoomNumber.setCustomValidity();
+    optionCapacity.setCustomValidity();
+  }
+};
+
+resetPage();
+addMainPinEvent();
+checkNumberHotel();
