@@ -22,9 +22,6 @@ const selectMapFilters = mapFilters.getElementsByTagName(`select`);
 const roomNumber = document.querySelector(`#room_number`);
 const capacity = document.querySelector(`#capacity`);
 
-const optionRoomNumber = roomNumber.getElementsByTagName(`option`);
-const optionCapacity = capacity.getElementsByTagName(`option`);
-
 let isPageActive = false;
 
 const LocationLimit = {
@@ -57,6 +54,20 @@ const SizeMainPin = {
   WIDTH: 65,
   HEIGHT: 65,
   AFTER: 22
+};
+
+const RoomValue = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+  HUNDER: 100
+};
+
+const CapacityValue = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 1,
+  NOTGUEST: 0
 };
 
 const getRandomNumber = (min, max) => {
@@ -256,13 +267,58 @@ const updateAddress = () => {
   setAddress(getAddress());
 };
 
-const checkNumberHotel = () => {
-  if (!(optionRoomNumber.value === optionCapacity.value)) {
-    optionRoomNumber.setCustomValidity();
-    optionCapacity.setCustomValidity();
+const validateRooms = () => {
+  const roomValue = parseInt(roomNumber.value, 10);
+  const capacityValue = parseInt(capacity.value, 10);
+
+  let message = ` `;
+  if (roomValue === RoomValue.ONE && capacityValue !== CapacityValue.ONE) {
+    message = `Неверное количество комнат`;
   }
+  if (roomValue === RoomValue.TWO && capacityValue !== CapacityValue.TWO) {
+    message = `Неверное количество комнат`;
+  }
+  if (roomValue === RoomValue.THREE && capacityValue !== CapacityValue.THREE) {
+    message = `Неверное количество комнат`;
+  }
+
+  roomNumber.setCustomValidity(message);
+  capacity.setCustomValidity(``);
+};
+
+const validateCapacity = () => {
+  const roomValue = parseInt(roomNumber.value, 10);
+  const capacityValue = parseInt(capacity.value, 10);
+
+  let message = ` `;
+  if (capacityValue === CapacityValue.ONE && roomValue !== RoomValue.ONE) {
+    message = `Неверное количество гостей`;
+  }
+  if (capacityValue === CapacityValue.TWO && roomValue !== RoomValue.TWO) {
+    message = `Неверное количество гостей`;
+  }
+  if (capacityValue === CapacityValue.THREE && roomValue !== RoomValue.THREE) {
+    message = `Неверное количество гостей`;
+  }
+  capacity.setCustomValidity(message);
+  roomNumber.setCustomValidity(``);
+};
+
+const addFormEvent = () => {
+  formInfo.addEventListener(`change`, function (evt) {
+    switch (evt.target.id) {
+      case roomNumber.id:
+        validateRooms();
+        break;
+      case capacity.id:
+        validateCapacity();
+        break;
+    }
+
+    formInfo.reportValidity();
+  });
 };
 
 resetPage();
 addMainPinEvent();
-checkNumberHotel();
+addFormEvent();
