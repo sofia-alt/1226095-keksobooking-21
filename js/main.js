@@ -11,8 +11,18 @@ const quantityPhotos = 3;
 const pinsContainer = document.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 const popupTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const pinMain = document.querySelector(`.map__pin--main`);
 const mapBlock = document.querySelector(`.map--faded`);
-mapBlock.classList.remove(`map--faded`);
+const formInfo = document.querySelector(`.ad-form`);
+const mapFilters = document.querySelector(`.map__filters`);
+
+const fieldsetFormInfo = formInfo.getElementsByTagName(`fieldset`);
+const selectMapFilters = mapFilters.getElementsByTagName(`select`);
+
+const roomNumber = document.querySelector(`#room_number`);
+const capacity = document.querySelector(`#capacity`);
+
+let isPageActive = false;
 
 const LocationLimit = {
   X_MIN: 0,
@@ -38,6 +48,26 @@ const offerTypes = {
   [OfferType.BUNGALOW]: `Бунгало`,
   [OfferType.HOUSE]: `Дом`,
   [OfferType.PALACE]: `Дворец`,
+};
+
+const SizeMainPin = {
+  WIDTH: 65,
+  HEIGHT: 65,
+  AFTER: 22
+};
+
+const RoomValue = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+  HUNDER: 100
+};
+
+const CapacityValue = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+  NOTGUEST: 0
 };
 
 const getRandomNumber = (min, max) => {
@@ -89,7 +119,7 @@ const getFeatures = () => {
 const getPhotos = () => {
   let photos = [];
 
-  for (let i = 0; i <= getRandomNumber(0, quantityPhotos); i++) {
+  for (let i = 0; i <= getRandomNumber(0, quantityPhotos - 1); i++) {
     let photo = `http://o0.github.io/assets/images/tokyo/hotel${i + 1}.jpg`;
     photos.push(photo);
   }
@@ -156,11 +186,7 @@ const addPopupPhotos = (photosElement, photos) => {
   });
 };
 
-const renderPopup = (pins) => {
-  if (pins.length === 0) {
-    return;
-  }
-  const pin = pins[0];
+const renderPopup = (pin) => {
   var popupElement = popupTemplate.cloneNode(true);
 
   popupElement.querySelector(`.popup__title`).textContent = pin.offer.title;
@@ -183,9 +209,116 @@ const renderPopup = (pins) => {
 const render = () => {
   const pins = getPins(COUNT_PINS);
   renderPins(pins);
-  renderPopup(pins);
+  renderPopup(pins[0]);
 };
 
-render();
 
-mapBlock.classList.remove(`map--faded`);
+const changeElementDisabledFormInfo = (elements) => {
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].disabled = !isPageActive;
+  }
+};
+
+const changeElementDisabledMapFilters = (elements) => {
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].disabled = !isPageActive;
+  }
+};
+
+const activatePage = () => {
+  isPageActive = true;
+  mapBlock.classList.remove(`map--faded`);
+  formInfo.classList.remove(`ad-form--disabled`);
+  changeElementDisabledFormInfo(fieldsetFormInfo);
+  changeElementDisabledMapFilters(selectMapFilters);
+  updateAddress();
+  render();
+};
+
+const resetPage = () => {
+  isPageActive = false;
+  mapBlock.classList.add(`map--faded`);
+  formInfo.classList.add(`ad-form--disabled`);
+  changeElementDisabledFormInfo(fieldsetFormInfo);
+  changeElementDisabledMapFilters(selectMapFilters);
+  updateAddress();
+};
+
+const addMainPinEvent = () => {
+  pinMain.addEventListener(`mousedown`, function () {
+    if (!isPageActive) {
+      activatePage();
+    }
+  });
+};
+
+const setAddress = ({valueX, valueY}) => {
+  document.querySelector(`#address`).value = `${valueX}, ${valueY}`;
+};
+
+const getAddress = () => {
+  const valueX = pinMain.offsetLeft + Math.floor(SizeMainPin.WIDTH / 2);
+  const valueY = pinMain.offsetTop + (!isPageActive ? Math.floor(SizeMainPin.HEIGHT / 2) : Math.floor(SizeMainPin.HEIGHT + SizeMainPin.AFTER));
+
+  return {valueX, valueY};
+};
+
+const updateAddress = () => {
+  setAddress(getAddress());
+};
+
+const validateRooms = () => {
+  const roomValue = parseInt(roomNumber.value, 10);
+  const capacityValue = parseInt(capacity.value, 10);
+
+  let message = ` `;
+  if (roomValue === RoomValue.ONE && capacityValue !== CapacityValue.ONE) {
+    message = `Неверное количество комнат`;
+  } else if (roomValue === RoomValue.TWO && !(capacityValue === CapacityValue.ONE || capacityValue === CapacityValue.TWO)) {
+    message = `Неверное количество комнат`;
+  } else if (roomValue === RoomValue.THREE && capacityValue === CapacityValue.NOTGUEST) {
+    message = `Неверное количество комнат`;
+  } else if (roomValue === RoomValue.HUNDER && capacityValue !== CapacityValue.NOTGUEST) {
+    message = `Неверное количество комнат`;
+  }
+
+  roomNumber.setCustomValidity(message);
+  capacity.setCustomValidity(``);
+};
+
+const validateCapacity = () => {
+  const roomValue = parseInt(roomNumber.value, 10);
+  const capacityValue = parseInt(capacity.value, 10);
+
+  let message = ``;
+  if (capacityValue === CapacityValue.ONE && roomValue === RoomValue.HUNDER) {
+    message = `Неверное количество гостей`;
+  } else if (capacityValue === CapacityValue.TWO && !(roomValue === RoomValue.TWO || roomValue === RoomValue.THREE)) {
+    message = `Неверное количество гостей`;
+  } else if (capacityValue === CapacityValue.THREE && roomValue !== RoomValue.THREE) {
+    message = `Неверное количество гостей`;
+  } else if (capacityValue === CapacityValue.NOTGUEST && roomValue !== RoomValue.HUNDER) {
+    message = `Неверное количество гостей`;
+  }
+  capacity.setCustomValidity(message);
+  roomNumber.setCustomValidity(``);
+};
+
+const addFormEvent = () => {
+  formInfo.addEventListener(`change`, function (evt) {
+    switch (evt.target.id) {
+      case roomNumber.id:
+        validateRooms();
+        break;
+      case capacity.id:
+        validateCapacity();
+        break;
+    }
+
+    formInfo.reportValidity();
+  });
+};
+
+resetPage();
+addMainPinEvent();
+addFormEvent();
