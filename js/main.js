@@ -19,8 +19,17 @@ const mapFilters = document.querySelector(`.map__filters`);
 const fieldsetFormInfo = formInfo.getElementsByTagName(`fieldset`);
 const selectMapFilters = mapFilters.getElementsByTagName(`select`);
 
-const roomNumber = document.querySelector(`#room_number`);
-const capacity = document.querySelector(`#capacity`);
+const roomNumber = formInfo.querySelector(`#room_number`);
+const capacity = formInfo.querySelector(`#capacity`);
+
+const titleInput = formInfo.querySelector(`#title`);
+const timeinFormInfo = formInfo.querySelector(`#timein`);
+const timeoutFormInfo = formInfo.querySelector(`#timeout`);
+
+const typeHousing = formInfo.querySelector(`#type`);
+const priceHousing = formInfo.querySelector(`#price`);
+
+const popupCloseButton = popupTemplate.querySelector(`.popup__close`);
 
 let isPageActive = false;
 
@@ -69,6 +78,20 @@ const CapacityValue = {
   THREE: 3,
   NOTGUEST: 0
 };
+
+const TitleLength = {
+  MIN_LENGTH: 30,
+  MAX_LENGTH: 100
+};
+
+const MinPriceHousing = {
+  FLAT: 1000,
+  BUNGALOW: 0,
+  HOUSE: 5000,
+  PALACE: 10000
+};
+
+const MAX_PRICE_HOUSING = 1000000;
 
 const getRandomNumber = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
@@ -254,6 +277,7 @@ const addMainPinEvent = () => {
 
 const setAddress = ({valueX, valueY}) => {
   document.querySelector(`#address`).value = `${valueX}, ${valueY}`;
+  document.querySelector(`#address`).readOnly = true;
 };
 
 const getAddress = () => {
@@ -304,6 +328,78 @@ const validateCapacity = () => {
   roomNumber.setCustomValidity(``);
 };
 
+const validateTitle = () => {
+  titleInput.addEventListener(`input`, function () {
+    let valueLength = titleInput.value.length;
+
+    if (valueLength < TitleLength.MIN_LENGTH) {
+      titleInput.setCustomValidity(`Ещё ` + (TitleLength.MIN_LENGTH - valueLength) + ` симв.`);
+    } else if (valueLength > TitleLength.MAX_LENGTH) {
+      titleInput.setCustomValidity(`Удалите лишние ` + (valueLength - TitleLength.MAX_LENGTH) + ` симв.`);
+    } else {
+      titleInput.setCustomValidity(``);
+    }
+
+    titleInput.reportValidity();
+  });
+};
+
+const validateTimein = () => {
+  timeinFormInfo.addEventListener(`click`, function (evt) {
+    timeoutFormInfo.value = evt.target.value;
+  });
+};
+
+const validateTimeout = () => {
+  timeoutFormInfo.addEventListener(`click`, function (evt) {
+    timeinFormInfo.value = evt.target.value;
+  });
+};
+
+const validateHousingType = () => {
+  if (typeHousing.value === OfferType.BUNGALOW) {
+    priceHousing.placeholder = MinPriceHousing.BUNGALOW;
+  } else if (typeHousing.value === OfferType.FLAT) {
+    priceHousing.placeholder = MinPriceHousing.FLAT;
+  } else if (typeHousing.value === OfferType.HOUSE) {
+    priceHousing.placeholder = MinPriceHousing.HOUSE;
+  } else if (typeHousing.value === OfferType.PALACE) {
+    priceHousing.placeholder = MinPriceHousing.PALACE;
+  }
+};
+
+const validatePriceHousing = () => {
+  let message = ``;
+
+  if (typeHousing.value === OfferType.BUNGALOW) {
+    if (priceHousing.value < MinPriceHousing.BUNGALOW) {
+      message = `Значение должно быть больше ${MinPriceHousing.BUNGALO}!`;
+    } else if (priceHousing.value > MAX_PRICE_HOUSING) {
+      message = `Значение должно быть меньше ${MinPriceHousing.BUNGALO}!`;
+    }
+  } else if (typeHousing.value === OfferType.FLAT) {
+    if (priceHousing.value < MinPriceHousing.FLAT) {
+      message = `Значение должно быть больше ${MinPriceHousing.FLAT}!`;
+    } else if (priceHousing.value > MAX_PRICE_HOUSING) {
+      message = `Значение должно быть меньше ${MinPriceHousing.FLAT}!`;
+    }
+  } else if (typeHousing.value === OfferType.HOUSE) {
+    if (priceHousing.value < MinPriceHousing.HOUSE) {
+      message = `Значение должно быть больше ${MinPriceHousing.HOUSE}!`;
+    } else if (priceHousing.value > MAX_PRICE_HOUSING) {
+      message = `Значение должно быть меньше ${MinPriceHousing.HOUSE}!`;
+    }
+  } else if (typeHousing.value === OfferType.PALACE) {
+    if (priceHousing.value < MinPriceHousing.PALACE) {
+      message = `Значение должно быть больше ${MinPriceHousing.PALACE}!`;
+    } else if (priceHousing.value > MAX_PRICE_HOUSING) {
+      message = `Значение должно быть меньше ${MinPriceHousing.PALACE}!`;
+    }
+  }
+
+  priceHousing.setCustomValidity(message);
+};
+
 const addFormEvent = () => {
   formInfo.addEventListener(`change`, function (evt) {
     switch (evt.target.id) {
@@ -312,6 +408,21 @@ const addFormEvent = () => {
         break;
       case capacity.id:
         validateCapacity();
+        break;
+      case titleInput.id:
+        validateTitle();
+        break;
+      case timeoutFormInfo.id:
+        validateTimeout();
+        break;
+      case timeinFormInfo.id:
+        validateTimein();
+        break;
+      case typeHousing.id:
+        validateHousingType();
+        break;
+      case priceHousing.id:
+        validatePriceHousing();
         break;
     }
 
@@ -322,3 +433,11 @@ const addFormEvent = () => {
 resetPage();
 addMainPinEvent();
 addFormEvent();
+
+const popupClose = () => {
+  popupCloseButton.addEventListener(`click`, function () {
+    popupTemplate.classList.add(`hidden`);
+  });
+};
+
+popupClose();
