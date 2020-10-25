@@ -66,7 +66,7 @@ const RoomValue = {
 const CapacityValue = {
   ONE: 1,
   TWO: 2,
-  THREE: 1,
+  THREE: 3,
   NOTGUEST: 0
 };
 
@@ -274,11 +274,11 @@ const validateRooms = () => {
   let message = ` `;
   if (roomValue === RoomValue.ONE && capacityValue !== CapacityValue.ONE) {
     message = `Неверное количество комнат`;
-  }
-  if (roomValue === RoomValue.TWO && capacityValue !== CapacityValue.TWO) {
+  } else if (roomValue === RoomValue.TWO && !(capacityValue === CapacityValue.ONE || capacityValue === CapacityValue.TWO)) {
     message = `Неверное количество комнат`;
-  }
-  if (roomValue === RoomValue.THREE && capacityValue !== CapacityValue.THREE) {
+  } else if (roomValue === RoomValue.THREE && capacityValue === CapacityValue.NOTGUEST) {
+    message = `Неверное количество комнат`;
+  } else if (roomValue === RoomValue.HUNDER && capacityValue !== CapacityValue.NOTGUEST) {
     message = `Неверное количество комнат`;
   }
 
@@ -290,14 +290,14 @@ const validateCapacity = () => {
   const roomValue = parseInt(roomNumber.value, 10);
   const capacityValue = parseInt(capacity.value, 10);
 
-  let message = ` `;
-  if (capacityValue === CapacityValue.ONE && roomValue !== RoomValue.ONE) {
+  let message = ``;
+  if (capacityValue === CapacityValue.ONE && roomValue === RoomValue.HUNDER) {
     message = `Неверное количество гостей`;
-  }
-  if (capacityValue === CapacityValue.TWO && roomValue !== RoomValue.TWO) {
+  } else if (capacityValue === CapacityValue.TWO && !(roomValue === RoomValue.TWO || roomValue === RoomValue.THREE)) {
     message = `Неверное количество гостей`;
-  }
-  if (capacityValue === CapacityValue.THREE && roomValue !== RoomValue.THREE) {
+  } else if (capacityValue === CapacityValue.THREE && roomValue !== RoomValue.THREE) {
+    message = `Неверное количество гостей`;
+  } else if (capacityValue === CapacityValue.NOTGUEST && roomValue !== RoomValue.HUNDER) {
     message = `Неверное количество гостей`;
   }
   capacity.setCustomValidity(message);
