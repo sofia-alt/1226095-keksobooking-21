@@ -29,9 +29,8 @@ const timeoutFormInfo = formInfo.querySelector(`#timeout`);
 const typeHousing = formInfo.querySelector(`#type`);
 const priceHousing = formInfo.querySelector(`#price`);
 
-const popupCloseButton = popupTemplate.querySelector(`.popup__close`);
-
 let isPageActive = false;
+let popupElement = null;
 
 const LocationLimit = {
   X_MIN: 0,
@@ -161,6 +160,12 @@ const getPins = (count) => {
   return pins;
 };
 
+const addPinEvent = (element, pin) => {
+  element.addEventListener(`click`, function () {
+    renderPopup(pin);
+  });
+};
+
 const renderPins = (pins) => {
   const fragment = document.createDocumentFragment();
 
@@ -171,6 +176,9 @@ const renderPins = (pins) => {
 
     element.style.left = `${pin.locations.x - Math.floor(SizePin.WIDTH / 2)}px`;
     element.style.top = `${pin.locations.y - SizePin.HEIGHT}px`;
+
+    addPinEvent(element, pin);
+
     fragment.appendChild(element);
   }
 
@@ -209,8 +217,18 @@ const addPopupPhotos = (photosElement, photos) => {
   });
 };
 
+const closePopup = () => {
+  if (popupElement !== null) {
+    popupElement.remove();
+    popupElement = null;
+  }
+
+};
+
 const renderPopup = (pin) => {
-  var popupElement = popupTemplate.cloneNode(true);
+  closePopup();
+
+  popupElement = popupTemplate.cloneNode(true);
 
   popupElement.querySelector(`.popup__title`).textContent = pin.offer.title;
   popupElement.querySelector(`.popup__text--address`).textContent = pin.offer.address;
@@ -220,12 +238,27 @@ const renderPopup = (pin) => {
   popupElement.querySelector(`.popup__text--capacity`).textContent = `${pin.offer.rooms} комнаты для ${pin.offer.guests} гостей`;
   popupElement.querySelector(`.popup__text--time`).textContent = `Заезд после ${pin.offer.checkin}, выезд до ${pin.offer.checkout}`;
 
+  popupElement.querySelector(`.popup__avatar`).src = pin.author.avatar;
+
   addPopupFeatures(popupElement.querySelector(`.popup__features`), pin.offer.features);
   popupElement.querySelector(`.popup__description`).textContent = pin.offer.description;
 
   addPopupPhotos(popupElement.querySelector(`.popup__photos`), pin.offer.photos);
 
   mapBlock.appendChild(popupElement);
+
+  const popupCloseButton = popupElement.querySelector(`.popup__close`);
+
+  popupCloseButton.addEventListener(`click`, function () {
+    closePopup();
+  });
+
+  mapBlock.addEventListener(`keydown`, function (evt) {
+    if (evt.keyCode === 27) {
+      evt.preventDefault();
+      closePopup();
+    }
+  });
 };
 
 
@@ -328,7 +361,7 @@ const validateCapacity = () => {
   roomNumber.setCustomValidity(``);
 };
 
-const validateTitle = () => {
+const addEventTitleForm = () => {
   titleInput.addEventListener(`input`, function () {
     let valueLength = titleInput.value.length;
 
@@ -357,47 +390,23 @@ const validateTimeout = () => {
 };
 
 const validateHousingType = () => {
+  priceHousing.max = MAX_PRICE_HOUSING;
+
   if (typeHousing.value === OfferType.BUNGALOW) {
     priceHousing.placeholder = MinPriceHousing.BUNGALOW;
+    priceHousing.min = MinPriceHousing.BUNGALOW;
   } else if (typeHousing.value === OfferType.FLAT) {
     priceHousing.placeholder = MinPriceHousing.FLAT;
+    priceHousing.min = MinPriceHousing.FLAT;
   } else if (typeHousing.value === OfferType.HOUSE) {
     priceHousing.placeholder = MinPriceHousing.HOUSE;
+    priceHousing.min = MinPriceHousing.HOUSE;
   } else if (typeHousing.value === OfferType.PALACE) {
     priceHousing.placeholder = MinPriceHousing.PALACE;
-  }
-};
-
-const validatePriceHousing = () => {
-  let message = ``;
-
-  if (typeHousing.value === OfferType.BUNGALOW) {
-    if (priceHousing.value < MinPriceHousing.BUNGALOW) {
-      message = `Значение должно быть больше ${MinPriceHousing.BUNGALO}!`;
-    } else if (priceHousing.value > MAX_PRICE_HOUSING) {
-      message = `Значение должно быть меньше ${MinPriceHousing.BUNGALO}!`;
-    }
-  } else if (typeHousing.value === OfferType.FLAT) {
-    if (priceHousing.value < MinPriceHousing.FLAT) {
-      message = `Значение должно быть больше ${MinPriceHousing.FLAT}!`;
-    } else if (priceHousing.value > MAX_PRICE_HOUSING) {
-      message = `Значение должно быть меньше ${MinPriceHousing.FLAT}!`;
-    }
-  } else if (typeHousing.value === OfferType.HOUSE) {
-    if (priceHousing.value < MinPriceHousing.HOUSE) {
-      message = `Значение должно быть больше ${MinPriceHousing.HOUSE}!`;
-    } else if (priceHousing.value > MAX_PRICE_HOUSING) {
-      message = `Значение должно быть меньше ${MinPriceHousing.HOUSE}!`;
-    }
-  } else if (typeHousing.value === OfferType.PALACE) {
-    if (priceHousing.value < MinPriceHousing.PALACE) {
-      message = `Значение должно быть больше ${MinPriceHousing.PALACE}!`;
-    } else if (priceHousing.value > MAX_PRICE_HOUSING) {
-      message = `Значение должно быть меньше ${MinPriceHousing.PALACE}!`;
-    }
+    priceHousing.min = MinPriceHousing.PALACE;
   }
 
-  priceHousing.setCustomValidity(message);
+  priceHousing.setCustomValidity();
 };
 
 const addFormEvent = () => {
@@ -409,9 +418,6 @@ const addFormEvent = () => {
       case capacity.id:
         validateCapacity();
         break;
-      case titleInput.id:
-        validateTitle();
-        break;
       case timeoutFormInfo.id:
         validateTimeout();
         break;
@@ -420,9 +426,6 @@ const addFormEvent = () => {
         break;
       case typeHousing.id:
         validateHousingType();
-        break;
-      case priceHousing.id:
-        validatePriceHousing();
         break;
     }
 
@@ -433,11 +436,4 @@ const addFormEvent = () => {
 resetPage();
 addMainPinEvent();
 addFormEvent();
-
-const popupClose = () => {
-  popupCloseButton.addEventListener(`click`, function () {
-    popupTemplate.classList.add(`hidden`);
-  });
-};
-
-popupClose();
+addEventTitleForm();
