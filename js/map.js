@@ -1,33 +1,62 @@
 "use strict";
-const pinsContainer = document.querySelector(`.map__pins`);
 
-const SizePin = {
-  WIDTH: 50,
-  HEIGHT: 70
-};
+(() => {
+  const COUNT_PINS = 8;
 
-const addPinEvent = (element, pin) => {
-  element.addEventListener(`click`, function () {
-    renderPopup(pin);
-  });
-};
+  const pinsContainer = document.querySelector(`.map__pins`);
+  const block = document.querySelector(`.map`);
+  const pinMain = document.querySelector(`.map__pin--main`);
 
-const renderPins = (pins) => {
-  const fragment = document.createDocumentFragment();
+  let isPageActive = false;
 
-  for (let i = 0; i < pins.length; i++) {
-    const pin = pins[i];
-    var element = pinTemplate.cloneNode(true);
-    element.querySelector(`img`).src = pin.author.avatar;
+  const renderPins = (pins) => {
+    const fragment = document.createDocumentFragment();
 
-    element.style.left = `${pin.locations.x - Math.floor(SizePin.WIDTH / 2)}px`;
-    element.style.top = `${pin.locations.y - SizePin.HEIGHT}px`;
+    for (let i = 0; i < pins.length; i++) {
+      const pin = pins[i];
+      fragment.appendChild(window.pin.getElement(pin));
+    }
 
-    addPinEvent(element, pin);
+    pinsContainer.appendChild(fragment);
+  };
 
-    fragment.appendChild(element);
-  }
+  const render = () => {
+    const pins = window.data.getPins(COUNT_PINS);
+    renderPins(pins);
+  };
 
-  pinsContainer.appendChild(fragment);
-};
+  const activateMap = () => {
+    isPageActive = true;
+    block.classList.remove(`map--faded`);
+    window.form.activate();
+    render();
+  };
+
+  const resetPage = () => {
+    isPageActive = false;
+    block.classList.add(`map--faded`);
+    window.form.reset();
+  };
+
+  const addMainPinEvent = () => {
+    pinMain.addEventListener(`mousedown`, function () {
+      if (!isPageActive) {
+        activateMap();
+      }
+    });
+  };
+
+  const getIsPageActive = () => {
+    return isPageActive;
+  };
+
+  window.map = {
+    addMainPinEvent,
+    getIsPageActive,
+    resetPage,
+    pinMain,
+    block
+  };
+
+})();
 

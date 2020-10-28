@@ -1,57 +1,92 @@
 "use strict";
-const quantityPhotos = 3;
 
-const getRandomNumber = (min, max) => {
-  return Math.round(Math.random() * (max - min) + min);
-};
+(() => {
+  const TITLES = [`Title1`, `Title2`, `Title3`, `Title4`, `Title5`];
+  const TIMES = [`12:00`, `13:00`, `14:00`];
+  const TYPES = [`palace`, `flat`, `house`, `bungalow`];
+  const PRISES = [1000, 2000, 3000, 4000];
+  const FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
 
-const getRandomItem = (items) => {
-  const randomValue = getRandomNumber(0, items.length);
-  return items[randomValue];
-};
+  const LocationLimit = {
+    X_MIN: 0,
+    X_MAX: 1200,
+    Y_MIN: 130,
+    Y_MAX: 630
+  };
 
-const getFeatures = () => {
-  let randomValue = getRandomNumber(0, FEATURES.length);
-  let features = [];
+  const quantityPhotos = 3;
 
-  for (let i = 0; i < randomValue; i++) {
-    const featureElement = FEATURES[getRandomNumber(0, randomValue)];
-    features.push(featureElement);
-  }
+  const getRandomNumber = (min, max) => {
+    return Math.round(Math.random() * (max - min) + min);
+  };
 
-  return features;
-};
+  const getRandomItem = (items) => {
+    const randomValue = getRandomNumber(0, items.length);
+    return items[randomValue];
+  };
 
-const getPhotos = () => {
-  let photos = [];
+  const getFeatures = () => {
+    let randomValue = getRandomNumber(0, FEATURES.length);
+    let features = [];
 
-  for (let i = 0; i <= getRandomNumber(0, quantityPhotos - 1); i++) {
-    let photo = `http://o0.github.io/assets/images/tokyo/hotel${i + 1}.jpg`;
-    photos.push(photo);
-  }
+    for (let i = 0; i < randomValue; i++) {
+      const featureElement = FEATURES[getRandomNumber(0, randomValue)];
+      features.push(featureElement);
+    }
 
-  return photos;
-};
+    return features;
+  };
 
-const setAddress = ({valueX, valueY}) => {
-  document.querySelector(`#address`).value = `${valueX}, ${valueY}`;
-  document.querySelector(`#address`).readOnly = true;
-};
+  const getPhotos = () => {
+    let photos = [];
 
-const getAddress = () => {
-  const valueX = pinMain.offsetLeft + Math.floor(SizeMainPin.WIDTH / 2);
-  const valueY = pinMain.offsetTop + (!isPageActive ? Math.floor(SizeMainPin.HEIGHT / 2) : Math.floor(SizeMainPin.HEIGHT + SizeMainPin.AFTER));
+    for (let i = 0; i <= getRandomNumber(0, quantityPhotos - 1); i++) {
+      let photo = `http://o0.github.io/assets/images/tokyo/hotel${i + 1}.jpg`;
+      photos.push(photo);
+    }
 
-  return {valueX, valueY};
-};
+    return photos;
+  };
 
-const getPins = (count) => {
-  const pins = [];
+  const getPin = (index) => {
+    return {
+      author: {
+        avatar: `img/avatars/user0${index + 1}.png`,
+      },
+      offer: {
+        title: getRandomItem(TITLES),
+        address: `600, 350`,
+        price: getRandomItem(PRISES),
+        type: getRandomItem(TYPES),
+        checkin: getRandomItem(TIMES),
+        rooms: 4,
+        guests: 2,
+        checkout: getRandomItem(TIMES),
+        features: getFeatures(FEATURES),
+        description: `Some description`,
+        photos: getPhotos(),
+      },
+      locations: {
+        x: getRandomNumber(LocationLimit.X_MIN, LocationLimit.X_MAX),
+        y: getRandomNumber(LocationLimit.Y_MIN, LocationLimit.Y_MAX),
+      }
+    };
+  };
 
-  for (let i = 0; i < count; i++) {
-    const pin = getPin(i);
-    pins.push(pin);
-  }
+  const getPins = (count) => {
+    const pins = [];
 
-  return pins;
-};
+    for (let i = 0; i < count; i++) {
+      const pin = getPin(i);
+      pins.push(pin);
+    }
+
+    return pins;
+  };
+
+  window.data = {
+    getPins
+  };
+
+
+})();
