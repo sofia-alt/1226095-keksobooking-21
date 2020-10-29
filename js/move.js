@@ -1,6 +1,21 @@
 "use strict";
 
 (() => {
+  const mapOverlay = document.querySelector(`.map__overlay`);
+
+  const SizeMainPin = {
+    WIDTH: 65,
+    HEIGHT: 65,
+    AFTER: 22
+  };
+
+  const LocationLimit = {
+    X_MIN: 0,
+    X_MAX: mapOverlay.offsetWidth,
+    Y_MIN: 130,
+    Y_MAX: 630
+  };
+
   const pin = () => {
     window.map.pinMain.addEventListener(`mousedown`, function (evt) {
       evt.preventDefault();
@@ -25,7 +40,6 @@
 
         window.map.pinMain.style.top = (window.map.pinMain.offsetTop - shift.y) + `px`;
         window.map.pinMain.style.left = (window.map.pinMain.offsetLeft - shift.x) + `px`;
-
       };
 
       const onMouseUp = (upEvt) => {
@@ -34,7 +48,7 @@
         document.removeEventListener(`mousemove`, onMouseMove);
         document.removeEventListener(`mouseup`, onMouseUp);
 
-        window.form.updateAddress();
+        updateAddress();
 
         let onClickPreventDefault = (clickEvt) => {
           clickEvt.preventDefault();
@@ -52,8 +66,41 @@
     });
   };
 
+  const setAddress = ({valueX, valueY}) => {
+    window.form.address.value = `${valueX}, ${valueY}`;
+    window.form.address.readOnly = true;
+  };
+
+
+  const getAddress = () => {
+    let valueX = window.map.pinMain.offsetLeft + Math.floor(SizeMainPin.WIDTH / 2);
+    let valueY = window.map.pinMain.offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : Math.floor(SizeMainPin.HEIGHT + SizeMainPin.AFTER));
+
+    if (valueX < LocationLimit.X_MIN) {
+      window.map.pinMain.style.left = (LocationLimit.X_MIN - Math.floor(SizeMainPin.WIDTH / 2)) + `px`;
+    }
+    if (valueY < LocationLimit.Y_MIN) {
+      window.map.pinMain.style.top = (LocationLimit.Y_MIN - Math.floor(SizeMainPin.HEIGHT / 2)) + `px`;
+    }
+    if (valueX > LocationLimit.X_MAX) {
+      window.map.pinMain.style.left = (LocationLimit.X_MAX - Math.floor(SizeMainPin.WIDTH / 2)) + `px`;
+    }
+    if (valueY > LocationLimit.Y_MAX) {
+      valueY = mapOverlay.offsetHeight;
+      window.map.pinMain.style.top = LocationLimit.Y_MAX + `px`;
+    }
+
+    return {
+      valueX, valueY
+    };
+  };
+
+  const updateAddress = () => {
+    setAddress(getAddress());
+  };
 
   window.move = {
-    pin
+    pin,
+    updateAddress
   };
 })();
