@@ -38,22 +38,14 @@
     window.form.reset();
   };
 
-  const addMainPinEvent = () => {
-    pinMain.addEventListener(`mousedown`, function () {
-      if (!isPageActive) {
-        activateMap();
-      }
-    });
-  };
-
   const getIsPageActive = () => {
     return isPageActive;
   };
 
   window.map = {
-    addMainPinEvent,
     getIsPageActive,
     resetPage,
+    activateMap,
     pinMain,
     block
   };

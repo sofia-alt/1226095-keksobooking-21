@@ -210,7 +210,8 @@
     activate,
     reset,
     addEvent,
-    addEventTitle
+    addEventTitle,
+    updateAddress
   };
 
 })();
