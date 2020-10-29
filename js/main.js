@@ -6,6 +6,6 @@
   window.map.addMainPinEvent();
   window.card.renderPopup();
   window.form.addEvent();
-  //window.form.addEventTitle();
+  window.form.addEventTitle();
 })();
 
