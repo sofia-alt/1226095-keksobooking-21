@@ -5,7 +5,6 @@
 
   const pinsContainer = document.querySelector(`.map__pins`);
   const block = document.querySelector(`.map`);
-  const pinMain = document.querySelector(`.map__pin--main`);
 
   let isPageActive = false;
 
@@ -46,7 +45,6 @@
     getIsPageActive,
     resetPage,
     activateMap,
-    pinMain,
     block
   };
 

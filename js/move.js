@@ -2,6 +2,7 @@
 
 (() => {
   const mapOverlay = document.querySelector(`.map__overlay`);
+  const pinMain = document.querySelector(`.map__pin--main`);
 
   const SizeMainPin = {
     WIDTH: 65,
@@ -17,7 +18,7 @@
   };
 
   const pin = () => {
-    window.map.pinMain.addEventListener(`mousedown`, function (evt) {
+    pinMain.addEventListener(`mousedown`, function (evt) {
       evt.preventDefault();
 
       let startCoords = {
@@ -37,34 +38,36 @@
           x: moveEvt.clientX,
           y: moveEvt.clientY
         };
-        validationLocation(shift);
+
+        const offsetLeft = pinMain.offsetLeft - shift.x;
+        const offsetTop = pinMain.offsetTop - shift.y;
+
+        getAddress(offsetLeft, offsetTop);
+
+        const isAddressValid = () => {
+          let addressValid = true;
+          if (offsetTop >= LocationLimit.Y_MAX) {
+            addressValid = false;
+          } else if (offsetTop <= LocationLimit.Y_MIN - SizeMainPin.AFTER) {
+            addressValid = false;
+          }
+          if (offsetLeft >= (LocationLimit.X_MAX - Math.floor(SizeMainPin.WIDTH / 2))) {
+            addressValid = false;
+          } else if (offsetLeft <= (LocationLimit.X_MIN - Math.floor(SizeMainPin.WIDTH / 2))) {
+            addressValid = false;
+          }
+          return addressValid;
+        };
+
+        const pinMove = () => {
+          if (isAddressValid()) {
+            pinMain.style.left = (offsetLeft) + `px`;
+            pinMain.style.top = (offsetTop) + `px`;
+            setAddress(getAddress(offsetLeft, offsetTop));
+          }
+        };
+        pinMove();
       };
-
-      // const newLocation = () => {
-      //   window.map.pinMain.style.left = (window.map.pinMain.offsetLeft - shift.x) + `px`;
-      //   window.map.pinMain.style.top = (window.map.pinMain.offsetTop - shift.y) + `px`;
-      // };
-
-      const validationLocation = (shift) => {
-        if (window.map.pinMain.offsetTop < LocationLimit.Y_MIN) {
-          window.map.pinMain.style.top = LocationLimit.Y_MIN;
-        } else
-        if (window.map.pinMain.offsetTop > LocationLimit.Y_MAX - SizeMainPin.AFTER) {
-          window.map.pinMain.style.top = LocationLimit.Y_MAX;
-        } else {
-          window.map.pinMain.style.top = (window.map.pinMain.offsetTop - shift.y) + `px`;
-        }
-
-        if (window.map.pinMain.offsetLeft < LocationLimit.X_MIN - Math.floor((SizeMainPin.WIDTH / 2))) {
-          window.map.pinMain.style.left = LocationLimit.X_MIN - Math.floor((SizeMainPin.WIDTH / 2));
-        } else
-        if (window.map.pinMain.offsetLeft > LocationLimit.X_MAX - Math.floor((SizeMainPin.WIDTH / 2))) {
-          window.map.pinMain.style.left = LocationLimit.X_MAX - Math.floor((SizeMainPin.WIDTH / 2));
-        } else {
-          window.map.pinMain.style.left = (window.map.pinMain.offsetLeft - shift.x) + `px`;
-        }
-      };
-
       const onMouseUp = (upEvt) => {
         upEvt.preventDefault();
 
@@ -75,9 +78,9 @@
 
         let onClickPreventDefault = (clickEvt) => {
           clickEvt.preventDefault();
-          window.map.pinMain.removeEventListener(`click`, onClickPreventDefault);
+          pinMain.removeEventListener(`click`, onClickPreventDefault);
         };
-        window.map.pinMain.addEventListener(`click`, onClickPreventDefault);
+        pinMain.addEventListener(`click`, onClickPreventDefault);
       };
 
       document.addEventListener(`mousemove`, onMouseMove);
@@ -95,23 +98,9 @@
   };
 
 
-  const getAddress = () => {
-    let valueX = window.map.pinMain.offsetLeft + Math.floor(SizeMainPin.WIDTH / 2);
-    let valueY = window.map.pinMain.offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : Math.floor(SizeMainPin.HEIGHT + SizeMainPin.AFTER));
-
-    // if (valueX < LocationLimit.X_MIN) {
-    //   window.map.pinMain.style.left = (LocationLimit.X_MIN - Math.floor(SizeMainPin.WIDTH / 2)) + `px`;
-    // }
-    // if (valueY < LocationLimit.Y_MIN) {
-    //   window.map.pinMain.style.top = (LocationLimit.Y_MIN - Math.floor(SizeMainPin.HEIGHT / 2)) + `px`;
-    // }
-    // if (valueX > LocationLimit.X_MAX) {
-    //   window.map.pinMain.style.left = (LocationLimit.X_MAX - Math.floor(SizeMainPin.WIDTH / 2)) + `px`;
-    // }
-    // if (valueY > LocationLimit.Y_MAX) {
-    //   valueY = mapOverlay.offsetHeight;
-    //   window.map.pinMain.style.top = LocationLimit.Y_MAX + `px`;
-    // }
+  const getAddress = (offsetLeft, offsetTop) => {
+    let valueX = offsetLeft + Math.floor(SizeMainPin.WIDTH / 2);
+    let valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : Math.floor(SizeMainPin.HEIGHT + SizeMainPin.AFTER));
 
     return {
       valueX, valueY
@@ -119,7 +108,8 @@
   };
 
   const updateAddress = () => {
-    setAddress(getAddress());
+    const {offsetLeft, offsetTop} = pinMain;
+    setAddress(getAddress(offsetLeft, offsetTop));
   };
 
   window.move = {
