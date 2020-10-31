@@ -17,7 +17,9 @@
     Y_MAX: 630
   };
 
+  const partSizeWidth = Math.floor(SizeMainPin.WIDTH / 2);
   const pin = () => {
+
     pinMain.addEventListener(`mousedown`, function (evt) {
       evt.preventDefault();
 
@@ -44,29 +46,16 @@
 
         getAddress(offsetLeft, offsetTop);
 
-        const isAddressValid = () => {
-          let addressValid = true;
-          if (offsetTop >= LocationLimit.Y_MAX) {
-            addressValid = false;
-          } else if (offsetTop <= LocationLimit.Y_MIN - SizeMainPin.AFTER) {
-            addressValid = false;
-          }
-          if (offsetLeft >= (LocationLimit.X_MAX - Math.floor(SizeMainPin.WIDTH / 2))) {
-            addressValid = false;
-          } else if (offsetLeft <= (LocationLimit.X_MIN - Math.floor(SizeMainPin.WIDTH / 2))) {
-            addressValid = false;
-          }
-          return addressValid;
-        };
+        const isAddressValid = offsetTop > (LocationLimit.Y_MIN - SizeMainPin.HEIGHT) &&
+          offsetTop < LocationLimit.Y_MAX &&
+          offsetLeft >= (LocationLimit.X_MIN - partSizeWidth) &&
+          offsetLeft <= (LocationLimit.X_MAX - partSizeWidth);
 
-        const pinMove = () => {
-          if (isAddressValid()) {
-            pinMain.style.left = (offsetLeft) + `px`;
-            pinMain.style.top = (offsetTop) + `px`;
-            setAddress(getAddress(offsetLeft, offsetTop));
-          }
-        };
-        pinMove();
+        if (isAddressValid) {
+          pinMain.style.left = (offsetLeft) + `px`;
+          pinMain.style.top = (offsetTop) + `px`;
+          setAddress(getAddress(offsetLeft, offsetTop));
+        }
       };
       const onMouseUp = (upEvt) => {
         upEvt.preventDefault();
@@ -91,7 +80,6 @@
       }
     });
   };
-
   const setAddress = ({valueX, valueY}) => {
     window.form.address.value = `${valueX}, ${valueY}`;
     window.form.address.readOnly = true;
@@ -99,8 +87,8 @@
 
 
   const getAddress = (offsetLeft, offsetTop) => {
-    let valueX = offsetLeft + Math.floor(SizeMainPin.WIDTH / 2);
-    let valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : Math.floor(SizeMainPin.HEIGHT + SizeMainPin.AFTER));
+    let valueX = offsetLeft + partSizeWidth;
+    let valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : (SizeMainPin.HEIGHT + SizeMainPin.AFTER));
 
     return {
       valueX, valueY
