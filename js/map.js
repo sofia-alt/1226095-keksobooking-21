@@ -5,7 +5,6 @@
 
   const pinsContainer = document.querySelector(`.map__pins`);
   const block = document.querySelector(`.map`);
-  const pinMain = document.querySelector(`.map__pin--main`);
 
   let isPageActive = false;
 
@@ -38,23 +37,14 @@
     window.form.reset();
   };
 
-  const addMainPinEvent = () => {
-    pinMain.addEventListener(`mousedown`, function () {
-      if (!isPageActive) {
-        activateMap();
-      }
-    });
-  };
-
   const getIsPageActive = () => {
     return isPageActive;
   };
 
   window.map = {
-    addMainPinEvent,
     getIsPageActive,
     resetPage,
-    pinMain,
+    activateMap,
     block
   };
 

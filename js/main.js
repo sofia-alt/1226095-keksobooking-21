@@ -2,9 +2,8 @@
 
 (() => {
   window.map.resetPage();
+  window.move.pin();
   window.form.reset();
-  window.map.addMainPinEvent();
-  window.card.renderPopup();
   window.form.addEvent();
   window.form.addEventTitle();
 })();

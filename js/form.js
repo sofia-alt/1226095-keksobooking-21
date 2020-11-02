@@ -18,13 +18,6 @@
 
   const address = formInfo.querySelector(`#address`);
 
-
-  const SizeMainPin = {
-    WIDTH: 65,
-    HEIGHT: 65,
-    AFTER: 22
-  };
-
   const RoomValue = {
     ONE: 1,
     TWO: 2,
@@ -52,24 +45,6 @@
   };
 
   const MAX_PRICE_HOUSING = 1000000;
-
-  const setAddress = ({valueX, valueY}) => {
-    address.value = `${valueX}, ${valueY}`;
-    address.readOnly = true;
-  };
-
-  const getAddress = () => {
-    const valueX = window.map.pinMain.offsetLeft + Math.floor(SizeMainPin.WIDTH / 2);
-    const valueY = window.map.pinMain.offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : Math.floor(SizeMainPin.HEIGHT + SizeMainPin.AFTER));
-
-    return {
-      valueX, valueY
-    };
-  };
-
-  const updateAddress = () => {
-    setAddress(getAddress());
-  };
 
   const changeElementDisabledMapFilters = (elements) => {
     for (let i = 0; i < elements.length; i++) {
@@ -196,21 +171,22 @@
     formInfo.classList.remove(`ad-form--disabled`);
     changeElementDisabledFormInfo(fieldsetFormInfo);
     changeElementDisabledMapFilters(selectMapFilters);
-    updateAddress();
+    window.move.updateAddress();
   };
 
   const reset = () => {
     formInfo.classList.add(`ad-form--disabled`);
     changeElementDisabledFormInfo(fieldsetFormInfo);
     changeElementDisabledMapFilters(selectMapFilters);
-    updateAddress();
+    window.move.updateAddress();
   };
 
   window.form = {
     activate,
     reset,
     addEvent,
-    addEventTitle
+    addEventTitle,
+    address
   };
 
 })();

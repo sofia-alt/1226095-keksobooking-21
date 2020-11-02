@@ -27,7 +27,8 @@
   };
 
   window.pin = {
-    getElement
+    getElement,
+    pinTemplate
   };
 
 })();
