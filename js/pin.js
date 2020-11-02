@@ -18,8 +18,8 @@
     const element = pinTemplate.cloneNode(true);
     element.querySelector(`img`).src = pin.author.avatar;
 
-    element.style.left = `${pin.locations.x - Math.floor(SizePin.WIDTH / 2)}px`;
-    element.style.top = `${pin.locations.y - SizePin.HEIGHT}px`;
+    element.style.left = `${pin.location.x - Math.floor(SizePin.WIDTH / 2)}px`;
+    element.style.top = `${pin.location.y - SizePin.HEIGHT}px`;
 
     addPinEvent(element, pin);
 
