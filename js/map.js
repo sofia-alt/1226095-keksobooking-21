@@ -1,7 +1,7 @@
 "use strict";
 
 (() => {
-  const COUNT_PINS = 8;
+  // const COUNT_PINS = 8;
 
   const pinsContainer = document.querySelector(`.map__pins`);
   const block = document.querySelector(`.map`);
@@ -19,9 +19,20 @@
     pinsContainer.appendChild(fragment);
   };
 
+  const errorHandler = (errorMessage) => {
+    let node = document.createElement(`p`);
+    node.style = `z-index: 100; margin: 100px auto; text-align: center; border: 3px solid red; font-size: 30px; border-radius: 10px; width: auto; max-width: 600px; padding: 10px; background-color: white;`;
+    node.style.position = `absolute`;
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = `30px`;
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement(`afterbegin`, node);
+  };
+
   const render = () => {
-    const pins = window.data.getPins(COUNT_PINS);
-    renderPins(pins);
+    window.backend.load(renderPins, errorHandler);
   };
 
   const activateMap = () => {
