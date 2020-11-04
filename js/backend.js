@@ -46,12 +46,33 @@
     xhr.send();
   };
 
-  const upload = (data, onSuccess) => {
+  const upload = (data, onSuccess, onError) => {
     let xhr = new XMLHttpRequest();
     xhr.responseType = `json`;
 
     xhr.addEventListener(`load`, function () {
       onSuccess(xhr.response);
+
+      let error;
+
+      switch (xhr.status) {
+        case 200:
+          onSuccess(xhr.response);
+          break;
+        case 400:
+          error = `Неверный запрос`;
+          break;
+        case 500:
+          error = `Внутренняя ошибка сервера`;
+          break;
+
+        default:
+          error = `Cтатус ответа: : ` + xhr.status + ` ` + xhr.statusText;
+      }
+
+      if (error) {
+        onError(error);
+      }
     });
 
     xhr.open(`POST`, URLUPLOAD);

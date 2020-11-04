@@ -96,6 +96,7 @@
 
   window.card = {
     renderPopup,
+    closePopup,
     OfferType
   };
 })();

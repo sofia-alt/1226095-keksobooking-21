@@ -18,6 +18,8 @@
 
   const address = formInfo.querySelector(`#address`);
 
+  const resetForm = formInfo.querySelector(`.ad-form__reset`);
+
   const RoomValue = {
     ONE: 1,
     TWO: 2,
@@ -174,6 +176,24 @@
     window.move.updateAddress();
   };
 
+  const resetInput = () => {
+    let valueNull = ``;
+    titleInput.value = valueNull;
+    priceHousing.value = valueNull;
+    formInfo.querySelector(`#description`).value = valueNull;
+    roomNumber.value = RoomValue.ONE;
+    capacity.value = CapacityValue.THREE;
+    timeoutFormInfo.value = `12:00`;
+    timeinFormInfo.value = `12:00`;
+    typeHousing.value = window.card.OfferType.HOUSE;
+    priceHousing.placeholder = MinPriceHousing.HOUSE;
+
+    const features = document.getElementsByTagName(`input`);
+    for (let i = 0; i < features.length; i++) {
+      features[i].checked = false;
+    }
+  };
+
   const reset = () => {
     formInfo.classList.add(`ad-form--disabled`);
     changeElementDisabledFormInfo(fieldsetFormInfo);
@@ -181,11 +201,22 @@
     window.move.updateAddress();
   };
 
+  const fullReset = () => {
+    window.map.fullReset();
+    window.card.closePopup();
+    reset();
+    resetInput();
+  };
+
   const submitHandler = (evt) => {
-    window.backend.upload();
-    window.upload(new FormData(formInfo));
+    window.backend.upload(new FormData(formInfo), function () {
+      fullReset();
+    }, window.map.errorHandler);
     evt.preventDefault();
   };
+
+  resetForm.addEventListener(`click`, fullReset);
+
   formInfo.addEventListener(`submit`, submitHandler);
 
   window.form = {

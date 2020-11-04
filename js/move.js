@@ -114,6 +114,7 @@
 
   window.move = {
     pin,
-    updateAddress
+    updateAddress,
+    pinMain
   };
 })();
