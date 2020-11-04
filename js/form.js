@@ -181,6 +181,13 @@
     window.move.updateAddress();
   };
 
+  const submitHandler = (evt) => {
+    window.backend.upload();
+    window.upload(new FormData(formInfo));
+    evt.preventDefault();
+  };
+  formInfo.addEventListener(`submit`, submitHandler);
+
   window.form = {
     activate,
     reset,
