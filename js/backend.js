@@ -3,9 +3,9 @@
   const URLLOAD = `https://21.javascript.pages.academy/keksobooking/data`;
   const URLUPLOAD = `https://21.javascript.pages.academy/keksobooking`;
 
-  let TIMEOUT_IN_MS = 10000;
+  const TIMEOUT_IN_MS = 10000;
 
-  const load = (onSuccess, onError) => {
+  const getInstance = (onSuccess, onError) => {
     let xhr = new XMLHttpRequest();
     xhr.responseType = `json`;
 
@@ -42,38 +42,18 @@
 
     xhr.timeout = TIMEOUT_IN_MS;
 
+    return xhr;
+  };
+
+  const load = (onSuccess, onError) => {
+    const xhr = getInstance(onSuccess, onError);
+
     xhr.open(`GET`, URLLOAD);
     xhr.send();
   };
 
   const upload = (data, onSuccess, onError) => {
-    let xhr = new XMLHttpRequest();
-    xhr.responseType = `json`;
-
-    xhr.addEventListener(`load`, function () {
-      onSuccess(xhr.response);
-
-      let error;
-
-      switch (xhr.status) {
-        case 200:
-          onSuccess(xhr.response);
-          break;
-        case 400:
-          error = `Неверный запрос`;
-          break;
-        case 500:
-          error = `Внутренняя ошибка сервера`;
-          break;
-
-        default:
-          error = `Cтатус ответа: : ` + xhr.status + ` ` + xhr.statusText;
-      }
-
-      if (error) {
-        onError(error);
-      }
-    });
+    const xhr = getInstance(onSuccess, onError);
 
     xhr.open(`POST`, URLUPLOAD);
     xhr.send(data);

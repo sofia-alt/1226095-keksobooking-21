@@ -8,24 +8,27 @@
 
   let isPageActive = false;
 
+  let pinElements = [];
+
   const renderPins = (pins) => {
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < pins.length; i++) {
       const pin = pins[i];
-      fragment.appendChild(window.pin.getElement(pin));
+      const pinElement = window.pin.getElement(pin);
+      pinElements.push(pinElement);
+      fragment.appendChild(pinElement);
     }
 
     pinsContainer.appendChild(fragment);
   };
 
   const resetPins = () => {
-    let allPins = block.querySelectorAll(`.map__pin`);
-    for (let i = 0; i < allPins.length; i++) {
-      if (!allPins[i].classList.contains(`map__pin--main`)) {
-        allPins[i].remove();
-      }
-    }
+    pinElements.forEach((pin) => {
+      pin.remove();
+    });
+
+    pinElements = [];
 
     window.move.pinMain.style.left = 570 + `px`;
     window.move.pinMain.style.top = 375 + `px`;
@@ -57,7 +60,7 @@
   const resetPage = () => {
     isPageActive = false;
     block.classList.add(`map--faded`);
-    window.form.reset();
+    // window.form.reset();
   };
 
   const getIsPageActive = () => {
