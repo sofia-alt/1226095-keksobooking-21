@@ -1,6 +1,8 @@
 "use strict";
 
 (() => {
+  const MAX_PRICE_HOUSING = 1000000;
+
   const formInfo = document.querySelector(`.ad-form`);
   const fieldsetFormInfo = formInfo.getElementsByTagName(`fieldset`);
   const mapFilters = document.querySelector(`.map__filters`);
@@ -17,6 +19,13 @@
   const priceHousing = formInfo.querySelector(`#price`);
 
   const address = formInfo.querySelector(`#address`);
+
+  const resetForm = formInfo.querySelector(`.ad-form__reset`);
+
+  const errorPopup = document.querySelector(`#error`).content.querySelector(`.error`);
+  const successPopup = document.querySelector(`#success`).content.querySelector(`.success`);
+
+  let popupMessage = null;
 
   const RoomValue = {
     ONE: 1,
@@ -44,7 +53,32 @@
     PALACE: 10000
   };
 
-  const MAX_PRICE_HOUSING = 1000000;
+  let housingValidationInfo;
+
+  const initHousingValidationInfo = () => {
+    housingValidationInfo = {
+      [window.card.OfferType.BUNGALOW]: {
+        min: MinPriceHousing.BUNGALOW,
+        placeholder: MinPriceHousing.BUNGALOW,
+        message: `Значение должно быть больше или равно ${MinPriceHousing.BUNGALOW}`
+      },
+      [window.card.OfferType.FLAT]: {
+        min: MinPriceHousing.FLAT,
+        placeholder: MinPriceHousing.FLAT,
+        message: `Значение должно быть больше или равно ${MinPriceHousing.FLAT}`
+      },
+      [window.card.OfferType.HOUSE]: {
+        min: MinPriceHousing.HOUSE,
+        placeholder: MinPriceHousing.HOUSE,
+        message: `Значение должно быть больше или равно ${MinPriceHousing.HOUSE}`
+      },
+      [window.card.OfferType.PALACE]: {
+        min: MinPriceHousing.PALACE,
+        placeholder: MinPriceHousing.PALACE,
+        message: `Значение должно быть больше или равно ${MinPriceHousing.PALACE}`
+      }
+    };
+  };
 
   const changeElementDisabledMapFilters = (elements) => {
     for (let i = 0; i < elements.length; i++) {
@@ -112,38 +146,26 @@
   };
 
   const validateTimein = () => {
-    timeinFormInfo.addEventListener(`click`, function (evt) {
-      timeoutFormInfo.value = evt.target.value;
-    });
+    timeoutFormInfo.value = timeinFormInfo.value;
   };
 
   const validateTimeout = () => {
-    timeoutFormInfo.addEventListener(`click`, function (evt) {
-      timeinFormInfo.value = evt.target.value;
-    });
+    timeinFormInfo.value = timeoutFormInfo.value;
   };
 
   const validateHousingType = () => {
     priceHousing.max = MAX_PRICE_HOUSING;
 
-    if (typeHousing.value === window.card.OfferType.BUNGALOW) {
-      priceHousing.placeholder = MinPriceHousing.BUNGALOW;
-      priceHousing.min = MinPriceHousing.BUNGALOW;
-    } else if (typeHousing.value === window.card.OfferType.FLAT) {
-      priceHousing.placeholder = MinPriceHousing.FLAT;
-      priceHousing.min = MinPriceHousing.FLAT;
-    } else if (typeHousing.value === window.card.OfferType.HOUSE) {
-      priceHousing.placeholder = MinPriceHousing.HOUSE;
-      priceHousing.min = MinPriceHousing.HOUSE;
-    } else if (typeHousing.value === window.card.OfferType.PALACE) {
-      priceHousing.placeholder = MinPriceHousing.PALACE;
-      priceHousing.min = MinPriceHousing.PALACE;
-    }
+    const {min, message, placeholder} = housingValidationInfo[typeHousing.value];
+    priceHousing.placeholder = placeholder;
+    const priceHousingValue = parseInt(priceHousing.value, 10);
 
-    priceHousing.setCustomValidity();
+    const errorMessage = priceHousingValue < min ? message : ``;
+
+    priceHousing.setCustomValidity(errorMessage);
   };
 
-  const addEvent = () => {
+  const addEventFrom = () => {
     formInfo.addEventListener(`change`, function (evt) {
       switch (evt.target.id) {
         case roomNumber.id:
@@ -174,6 +196,11 @@
     window.move.updateAddress();
   };
 
+  const resetInput = () => {
+    formInfo.reset();
+    window.move.updateAddress();
+  };
+
   const reset = () => {
     formInfo.classList.add(`ad-form--disabled`);
     changeElementDisabledFormInfo(fieldsetFormInfo);
@@ -181,11 +208,74 @@
     window.move.updateAddress();
   };
 
+  const fullReset = () => {
+    window.map.fullReset();
+    window.card.closePopup();
+    reset();
+    resetInput();
+  };
+
+  const renderMessage = (messageType) => {
+    popupMessage = messageType.cloneNode(true);
+    document.body.append(popupMessage);
+  };
+
+  const onLoadSuccess = () => {
+    fullReset();
+    renderMessage(successPopup);
+    addEventMessage();
+  };
+
+
+  const onLoadError = () => {
+    renderMessage(errorPopup);
+    addEventMessage();
+  };
+
+  const closePopupMessage = () => {
+    if (popupMessage !== null) {
+      popupMessage.remove();
+      popupMessage = null;
+    }
+  };
+
+  const addEventMessage = () => {
+    document.addEventListener(`keydown`, function (evt) {
+      if (evt.keyCode === 27) {
+        evt.preventDefault();
+        closePopupMessage();
+      }
+    });
+
+    document.addEventListener(`click`, function () {
+      closePopupMessage();
+    });
+  };
+
+  const submitHandler = (evt) => {
+    window.backend.upload(new FormData(formInfo), onLoadSuccess, onLoadError);
+    evt.preventDefault();
+  };
+
+  resetForm.addEventListener(`click`, fullReset);
+
+  formInfo.addEventListener(`submit`, submitHandler);
+
+
+  const init = () => {
+    initHousingValidationInfo();
+    reset();
+    addEventFrom();
+    addEventTitle();
+
+    validateRooms();
+    validateCapacity();
+    validateHousingType();
+  };
+
   window.form = {
     activate,
-    reset,
-    addEvent,
-    addEventTitle,
+    init,
     address
   };
 

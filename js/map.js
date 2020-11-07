@@ -8,15 +8,30 @@
 
   let isPageActive = false;
 
+  let pinElements = [];
+
   const renderPins = (pins) => {
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < pins.length; i++) {
       const pin = pins[i];
-      fragment.appendChild(window.pin.getElement(pin));
+      const pinElement = window.pin.getElement(pin);
+      pinElements.push(pinElement);
+      fragment.appendChild(pinElement);
     }
 
     pinsContainer.appendChild(fragment);
+  };
+
+  const resetPins = () => {
+    pinElements.forEach((pin) => {
+      pin.remove();
+    });
+
+    pinElements = [];
+
+    window.move.pinMain.style.left = 570 + `px`;
+    window.move.pinMain.style.top = 375 + `px`;
   };
 
   const errorHandler = (errorMessage) => {
@@ -45,17 +60,24 @@
   const resetPage = () => {
     isPageActive = false;
     block.classList.add(`map--faded`);
-    window.form.reset();
+    // window.form.reset();
   };
 
   const getIsPageActive = () => {
     return isPageActive;
   };
 
+  const fullReset = () => {
+    resetPins();
+    resetPage();
+  };
+
   window.map = {
     getIsPageActive,
     resetPage,
     activateMap,
+    fullReset,
+    errorHandler,
     block
   };
 
