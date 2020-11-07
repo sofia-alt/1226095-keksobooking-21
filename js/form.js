@@ -157,6 +157,7 @@
     priceHousing.max = MAX_PRICE_HOUSING;
 
     const {min, message, placeholder} = housingValidationInfo[typeHousing.value];
+    priceHousing.placeholder = placeholder;
     const priceHousingValue = parseInt(priceHousing.value, 10);
 
     const errorMessage = priceHousingValue < min ? message : ``;
