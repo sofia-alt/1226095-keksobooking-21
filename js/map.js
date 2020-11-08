@@ -1,10 +1,14 @@
 "use strict";
 
 (() => {
-  // const COUNT_PINS = 8;
-
   const pinsContainer = document.querySelector(`.map__pins`);
   const block = document.querySelector(`.map`);
+  const mapFiltres = document.querySelector(`.map__filters`);
+  const housingType = mapFiltres.querySelector(`#housing-type`);
+  // const housingPrice = mapFiltres.querySelector(`#housing-price`);
+  // const housingRooms = mapFiltres.querySelector(`#housing-rooms`);
+  // const housingGuests = mapFiltres.querySelector(`#housing-guests`);
+  // const housingFeatures = mapFiltres.querySelector(`#housing-features`);
 
   let isPageActive = false;
 
@@ -29,7 +33,9 @@
     });
 
     pinElements = [];
+  };
 
+  const resetMainPin = () => {
     window.move.pinMain.style.left = 570 + `px`;
     window.move.pinMain.style.top = 375 + `px`;
   };
@@ -46,9 +52,19 @@
     document.body.insertAdjacentElement(`afterbegin`, node);
   };
 
-  const render = () => {
-    window.backend.load(renderPins, errorHandler);
+  const onLoadSuccess = (pins) => {
+    renderPins(window.filter.getFiltred(pins, housingType.value));
   };
+
+  const render = () => {
+    window.backend.load(onLoadSuccess, errorHandler);
+  };
+
+  addEventListener(`change`, function () {
+    resetPins();
+    window.card.closePopup();
+    window.backend.load(onLoadSuccess, errorHandler);
+  });
 
   const activateMap = () => {
     isPageActive = true;
@@ -60,7 +76,6 @@
   const resetPage = () => {
     isPageActive = false;
     block.classList.add(`map--faded`);
-    // window.form.reset();
   };
 
   const getIsPageActive = () => {
@@ -69,6 +84,7 @@
 
   const fullReset = () => {
     resetPins();
+    resetMainPin();
     resetPage();
   };
 
@@ -78,6 +94,7 @@
     activateMap,
     fullReset,
     errorHandler,
+    resetMainPin,
     block
   };
 
