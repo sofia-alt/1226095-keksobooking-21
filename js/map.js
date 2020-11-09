@@ -5,14 +5,19 @@
   const block = document.querySelector(`.map`);
   const mapFiltres = document.querySelector(`.map__filters`);
   const housingType = mapFiltres.querySelector(`#housing-type`);
-  // const housingPrice = mapFiltres.querySelector(`#housing-price`);
-  // const housingRooms = mapFiltres.querySelector(`#housing-rooms`);
-  // const housingGuests = mapFiltres.querySelector(`#housing-guests`);
-  // const housingFeatures = mapFiltres.querySelector(`#housing-features`);
+  const housingPrice = mapFiltres.querySelector(`#housing-price`);
+  const housingRooms = mapFiltres.querySelector(`#housing-rooms`);
+  const housingGuests = mapFiltres.querySelector(`#housing-guests`);
+  const housingFeatures = mapFiltres.querySelectorAll(`#housing-features input:checked`);
 
   let isPageActive = false;
 
   let pinElements = [];
+
+  const StartLocationMainPin = {
+    left: 570,
+    top: 375
+  };
 
   const renderPins = (pins) => {
     const fragment = document.createDocumentFragment();
@@ -36,8 +41,8 @@
   };
 
   const resetMainPin = () => {
-    window.move.pinMain.style.left = 570 + `px`;
-    window.move.pinMain.style.top = 375 + `px`;
+    window.move.pinMain.style.left = StartLocationMainPin.left + `px`;
+    window.move.pinMain.style.top = StartLocationMainPin.top + `px`;
   };
 
   const errorHandler = (errorMessage) => {
@@ -53,7 +58,7 @@
   };
 
   const onLoadSuccess = (pins) => {
-    renderPins(window.filter.getFiltred(pins, housingType.value));
+    renderPins(window.filter.getFiltred(pins, housingType.value, housingPrice.value, housingRooms.value, housingGuests.value, housingFeatures));
   };
 
   const render = () => {
