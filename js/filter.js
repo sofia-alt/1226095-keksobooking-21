@@ -16,33 +16,17 @@
     high: `high`
   };
 
-  // const FeaturesName = {
-  //   wifi: `wifi`,
-  //   dishwasher: `dishwasher`,
-  //   parking: `parking`,
-  //   washer: `washer`,
-  //   elevator: `elevator`,
-  //   conditioner: `conditioner`
-  // };
-
   const isAvaliableHouseType = (pin, housingType) => {
     return housingType === ANY_VALUE || pin.offer.type === housingType;
   };
 
   const isAvaliablePrice = (pin, housingPrice) => {
-    if (housingPrice === PriceName.middle) {
-      if (pin.offer.price >= PriceValue.middleMin && pin.offer.price <= PriceValue.middleMax) {
-        return pin.offer.price;
-      }
-    } else if (housingPrice === PriceName.low) {
-      if (pin.offer.price <= PriceValue.low) {
-        return pin.offer.price;
-      }
-    } else if (housingPrice === PriceName.high) {
-      if (pin.offer.price >= PriceValue.high) {
-        return pin.offer.price;
-      }
-    } return housingPrice === ANY_VALUE;
+    switch (housingPrice) {
+      case PriceName.middle: return pin.offer.price >= PriceValue.middleMin && pin.offer.price <= PriceValue.middleMax;
+      case PriceName.low: return pin.offer.price < PriceValue.low;
+      case PriceName.high: return pin.offer.price > PriceValue.high;
+      default: return housingPrice === ANY_VALUE;
+    }
   };
 
   const isAvaliableRooms = (pin, housingRooms) => {
@@ -53,20 +37,18 @@
     return housingGuests === ANY_VALUE || pin.offer.guests === parseInt(housingGuests, 10);
   };
 
-  // const isAvaliableFeatures = (pin, housingFeatures) => {
-  //   if (housingFeatures === undefined) {
-  //     return;
-  //   }
-  // };
+  const isAvaliableFeatures = (pin, housingFeatures) => {
+    return housingFeatures.every((feature) => pin.offer.features.includes(feature));
+  };
 
-  const getFiltred = (pins, housingType, housingPrice, housingRooms, housingGuests) => {
+  const getFiltred = (pins, housingType, housingPrice, housingRooms, housingGuests, housingFeatures) => {
     const result = [];
 
     for (let i = 0; i < pins.length; i++) {
       const pin = pins[i];
 
-      const isFiltred = isAvaliableHouseType(pin, housingType) && isAvaliablePrice(pin, housingPrice) && isAvaliableRooms(pin, housingRooms) && isAvaliableGuests(pin, housingGuests);
-      // && isAvaliableFeatures(pin, housingFeatures);
+      const isFiltred = isAvaliableHouseType(pin, housingType) && isAvaliablePrice(pin, housingPrice) && isAvaliableRooms(pin, housingRooms) && isAvaliableGuests(pin, housingGuests)
+        && isAvaliableFeatures(pin, housingFeatures);
 
       if (isFiltred) {
         result.push(pin);

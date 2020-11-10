@@ -24,6 +24,10 @@
     pinMain.addEventListener(`mousedown`, function (evt) {
       evt.preventDefault();
 
+      if (!window.map.getIsPageActive()) {
+        window.map.activateMap();
+      }
+
       let startCoords = {
         x: evt.clientX,
         y: evt.clientY
@@ -31,10 +35,6 @@
 
       const onMouseMove = (moveEvt) => {
         moveEvt.preventDefault();
-
-        if (!window.map.getIsPageActive()) {
-          window.map.activateMap();
-        }
 
         let shift = {
           x: startCoords.x - moveEvt.clientX,

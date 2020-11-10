@@ -1,7 +1,7 @@
 "use strict";
 
 (() => {
-  window.map.resetPage();
+  window.map.init();
   window.move.pin();
   window.form.init();
 })();

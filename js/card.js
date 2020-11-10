@@ -55,7 +55,6 @@
       popupElement.remove();
       popupElement = null;
     }
-
   };
 
   const renderPopup = (pin) => {

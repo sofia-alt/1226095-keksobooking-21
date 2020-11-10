@@ -8,11 +8,11 @@
   const housingPrice = mapFiltres.querySelector(`#housing-price`);
   const housingRooms = mapFiltres.querySelector(`#housing-rooms`);
   const housingGuests = mapFiltres.querySelector(`#housing-guests`);
-  const housingFeatures = mapFiltres.querySelectorAll(`#housing-features input:checked`);
 
   let isPageActive = false;
 
   let pinElements = [];
+  let items = [];
 
   const StartLocationMainPin = {
     left: 570,
@@ -46,7 +46,7 @@
   };
 
   const errorHandler = (errorMessage) => {
-    let node = document.createElement(`p`);
+    const node = document.createElement(`p`);
     node.style = `z-index: 100; margin: 100px auto; text-align: center; border: 3px solid red; font-size: 30px; border-radius: 10px; width: auto; max-width: 600px; padding: 10px; background-color: white;`;
     node.style.position = `absolute`;
     node.style.left = 0;
@@ -57,19 +57,18 @@
     document.body.insertAdjacentElement(`afterbegin`, node);
   };
 
+  const getHousingFeatures = () => {
+    return Array.from(mapFiltres.querySelectorAll(`#housing-features input:checked`)).map((item) => item.value);
+  };
+
   const onLoadSuccess = (pins) => {
-    renderPins(window.filter.getFiltred(pins, housingType.value, housingPrice.value, housingRooms.value, housingGuests.value, housingFeatures));
+    items = pins;
+    renderPins(window.filter.getFiltred(items, housingType.value, housingPrice.value, housingRooms.value, housingGuests.value, getHousingFeatures()));
   };
 
   const render = () => {
     window.backend.load(onLoadSuccess, errorHandler);
   };
-
-  addEventListener(`change`, function () {
-    resetPins();
-    window.card.closePopup();
-    window.backend.load(onLoadSuccess, errorHandler);
-  });
 
   const activateMap = () => {
     isPageActive = true;
@@ -87,15 +86,29 @@
     return isPageActive;
   };
 
+  const changeFilters = () => {
+    mapFiltres.addEventListener(`change`, window.debounce(() => {
+      resetPins();
+      window.card.closePopup();
+      renderPins(window.filter.getFiltred(items, housingType.value, housingPrice.value, housingRooms.value, housingGuests.value, getHousingFeatures()));
+    }));
+  };
+
   const fullReset = () => {
     resetPins();
     resetMainPin();
     resetPage();
   };
 
+  const init = () => {
+    resetPage();
+    changeFilters();
+  };
+
   window.map = {
     getIsPageActive,
     resetPage,
+    init,
     activateMap,
     fullReset,
     errorHandler,
