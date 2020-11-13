@@ -1,69 +1,67 @@
 "use strict";
 
-(() => {
-  const ANY_VALUE = `any`;
-  const COUNT_PIN = 5;
+const ANY_VALUE = `any`;
+const COUNT_PIN = 5;
 
-  const PriceValue = {
-    MIDDLE_MIN: 10000,
-    MIDDLE_MAX: 50000,
-    LOW: 10000,
-    HIGH: 50000
-  };
+const PriceValue = {
+  MIDDLE_MIN: 10000,
+  MIDDLE_MAX: 50000,
+  LOW: 10000,
+  HIGH: 50000
+};
 
-  const PriceName = {
-    MIDDLE: `middle`,
-    LOW: `low`,
-    HIGH: `high`
-  };
+const PriceName = {
+  MIDDLE: `middle`,
+  LOW: `low`,
+  HIGH: `high`
+};
 
-  const isAvaliableHouseType = (pin, housingType) => {
-    return housingType === ANY_VALUE || pin.offer.type === housingType;
-  };
+const isAvaliableHouseType = (pin, housingType) => {
+  return housingType === ANY_VALUE || pin.offer.type === housingType;
+};
 
-  const isAvaliablePrice = (pin, housingPrice) => {
-    switch (housingPrice) {
-      case PriceName.MIDDLE: return pin.offer.price >= PriceValue.MIDDLE_MIN && pin.offer.price <= PriceValue.MIDDLE_MAX;
-      case PriceName.LOW: return pin.offer.price < PriceValue.LOW;
-      case PriceName.HIGH: return pin.offer.price > PriceValue.HIGH;
-      default: return housingPrice === ANY_VALUE;
-    }
-  };
+const isAvaliablePrice = (pin, housingPrice) => {
+  switch (housingPrice) {
+    case PriceName.MIDDLE: return pin.offer.price >= PriceValue.MIDDLE_MIN && pin.offer.price <= PriceValue.MIDDLE_MAX;
+    case PriceName.LOW: return pin.offer.price < PriceValue.LOW;
+    case PriceName.HIGH: return pin.offer.price > PriceValue.HIGH;
+    default: return housingPrice === ANY_VALUE;
+  }
+};
 
-  const isAvaliableRooms = (pin, housingRooms) => {
-    return housingRooms === ANY_VALUE || pin.offer.rooms === parseInt(housingRooms, 10);
-  };
+const isAvaliableRooms = (pin, housingRooms) => {
+  return housingRooms === ANY_VALUE || pin.offer.rooms === parseInt(housingRooms, 10);
+};
 
-  const isAvaliableGuests = (pin, housingGuests) => {
-    return housingGuests === ANY_VALUE || pin.offer.guests === parseInt(housingGuests, 10);
-  };
+const isAvaliableGuests = (pin, housingGuests) => {
+  return housingGuests === ANY_VALUE || pin.offer.guests === parseInt(housingGuests, 10);
+};
 
-  const isAvaliableFeatures = (pin, housingFeatures) => {
-    return housingFeatures.every((feature) => pin.offer.features.includes(feature));
-  };
+const isAvaliableFeatures = (pin, housingFeatures) => {
+  return housingFeatures.every((feature) => pin.offer.features.includes(feature));
+};
 
-  const getFiltred = (pins, housingType, housingPrice, housingRooms, housingGuests, housingFeatures) => {
-    const result = [];
+const getFiltred = (pins, housingType, housingPrice, housingRooms, housingGuests, housingFeatures) => {
+  const result = [];
 
-    for (let i = 0; i < pins.length; i++) {
-      const pin = pins[i];
+  for (let i = 0; i < pins.length; i++) {
+    const pin = pins[i];
 
-      const isFiltred = isAvaliableHouseType(pin, housingType) && isAvaliablePrice(pin, housingPrice) && isAvaliableRooms(pin, housingRooms) && isAvaliableGuests(pin, housingGuests)
-        && isAvaliableFeatures(pin, housingFeatures);
+    const isFiltred = isAvaliableHouseType(pin, housingType) && isAvaliablePrice(pin, housingPrice) && isAvaliableRooms(pin, housingRooms) && isAvaliableGuests(pin, housingGuests)
+      && isAvaliableFeatures(pin, housingFeatures);
 
-      if (isFiltred) {
-        result.push(pin);
+    if (isFiltred) {
+      result.push(pin);
 
-        if (result.length === COUNT_PIN) {
-          break;
-        }
+      if (result.length === COUNT_PIN) {
+        break;
       }
     }
+  }
 
-    return result;
-  };
+  return result;
+};
 
-  window.filter = {
-    getFiltred
-  };
-})();
+window.filter = {
+  getFiltred
+};

@@ -1,66 +1,65 @@
 "use strict";
-(function () {
-  const URLLOAD = `https://21.javascript.pages.academy/keksobooking/data`;
-  const URLUPLOAD = `https://21.javascript.pages.academy/keksobooking`;
 
-  const TIMEOUT_IN_MS = 10000;
+const URLLOAD = `https://21.javascript.pages.academy/keksobooking/data`;
+const URLUPLOAD = `https://21.javascript.pages.academy/keksobooking`;
 
-  const getInstance = (onSuccess, onError) => {
-    let xhr = new XMLHttpRequest();
-    xhr.responseType = `json`;
+const TIMEOUT_IN_MS = 10000;
 
-    xhr.addEventListener(`load`, () => {
-      let error;
-      switch (xhr.status) {
-        case 200:
-          onSuccess(xhr.response);
-          break;
-        case 400:
-          error = `Неверный запрос`;
-          break;
-        case 401:
-          error = `Пользователь не авторизован`;
-          break;
-        case 404:
-          error = `Ничего не найдено`;
-          break;
+const getInstance = (onSuccess, onError) => {
+  let xhr = new XMLHttpRequest();
+  xhr.responseType = `json`;
 
-        default:
-          error = `Cтатус ответа: : ` + xhr.status + ` ` + xhr.statusText;
-      }
+  xhr.addEventListener(`load`, () => {
+    let error;
+    switch (xhr.status) {
+      case 200:
+        onSuccess(xhr.response);
+        break;
+      case 400:
+        error = `Неверный запрос`;
+        break;
+      case 401:
+        error = `Пользователь не авторизован`;
+        break;
+      case 404:
+        error = `Ничего не найдено`;
+        break;
 
-      if (error) {
-        onError(error);
-      }
-    });
-    xhr.addEventListener(`error`, () => {
-      onError(`Произошла ошибка соединения`);
-    });
-    xhr.addEventListener(`timeout`, () => {
-      onError(`Запрос не успел выполниться за ` + xhr.timeout + `мс`);
-    });
+      default:
+        error = `Cтатус ответа: : ` + xhr.status + ` ` + xhr.statusText;
+    }
 
-    xhr.timeout = TIMEOUT_IN_MS;
+    if (error) {
+      onError(error);
+    }
+  });
+  xhr.addEventListener(`error`, () => {
+    onError(`Произошла ошибка соединения`);
+  });
+  xhr.addEventListener(`timeout`, () => {
+    onError(`Запрос не успел выполниться за ` + xhr.timeout + `мс`);
+  });
 
-    return xhr;
-  };
+  xhr.timeout = TIMEOUT_IN_MS;
 
-  const load = (onSuccess, onError) => {
-    const xhr = getInstance(onSuccess, onError);
+  return xhr;
+};
 
-    xhr.open(`GET`, URLLOAD);
-    xhr.send();
-  };
+const load = (onSuccess, onError) => {
+  const xhr = getInstance(onSuccess, onError);
 
-  const upload = (data, onSuccess, onError) => {
-    const xhr = getInstance(onSuccess, onError);
+  xhr.open(`GET`, URLLOAD);
+  xhr.send();
+};
 
-    xhr.open(`POST`, URLUPLOAD);
-    xhr.send(data);
-  };
+const upload = (data, onSuccess, onError) => {
+  const xhr = getInstance(onSuccess, onError);
 
-  window.backend = {
-    load,
-    upload
-  };
-})();
+  xhr.open(`POST`, URLUPLOAD);
+  xhr.send(data);
+};
+
+window.backend = {
+  load,
+  upload
+};
