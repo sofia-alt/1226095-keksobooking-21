@@ -21,7 +21,7 @@
 
   const pin = () => {
 
-    pinMain.addEventListener(`mousedown`, function (evt) {
+    pinMain.addEventListener(`mousedown`, (evt) => {
       evt.preventDefault();
 
       if (!window.map.getIsPageActive()) {
@@ -73,7 +73,7 @@
 
         updateAddress();
 
-        let onClickPreventDefault = (clickEvt) => {
+        const onClickPreventDefault = (clickEvt) => {
           clickEvt.preventDefault();
           pinMain.removeEventListener(`click`, onClickPreventDefault);
         };

@@ -11,7 +11,7 @@
     PALACE: `palace`
   };
 
-  const offerTypes = {
+  const OfferTypesDictionary = {
     [OfferType.FLAT]: `Квартира`,
     [OfferType.BUNGALOW]: `Бунгало`,
     [OfferType.HOUSE]: `Дом`,
@@ -66,7 +66,7 @@
     popupElement.querySelector(`.popup__text--address`).textContent = pin.offer.address;
     popupElement.querySelector(`.popup__text--price`).textContent = `${pin.offer.price}₽/ночь`;
 
-    popupElement.querySelector(`.popup__type`).textContent = offerTypes[pin.offer.type];
+    popupElement.querySelector(`.popup__type`).textContent = OfferTypesDictionary[pin.offer.type];
     popupElement.querySelector(`.popup__text--capacity`).textContent = `${pin.offer.rooms} комнаты для ${pin.offer.guests} гостей`;
     popupElement.querySelector(`.popup__text--time`).textContent = `Заезд после ${pin.offer.checkin}, выезд до ${pin.offer.checkout}`;
 
@@ -81,11 +81,11 @@
 
     const popupCloseButton = popupElement.querySelector(`.popup__close`);
 
-    popupCloseButton.addEventListener(`click`, function () {
+    popupCloseButton.addEventListener(`click`, () => {
       closePopup();
     });
 
-    window.map.block.addEventListener(`keydown`, function (evt) {
+    window.map.block.addEventListener(`keydown`, (evt) => {
       if (evt.keyCode === 27) {
         evt.preventDefault();
         closePopup();

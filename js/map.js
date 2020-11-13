@@ -45,7 +45,7 @@
     window.move.pinMain.style.top = StartLocationMainPin.top + `px`;
   };
 
-  const errorHandler = (errorMessage) => {
+  const onLoadError = (errorMessage) => {
     const node = document.createElement(`p`);
     node.style = `z-index: 100; margin: 100px auto; text-align: center; border: 3px solid red; font-size: 30px; border-radius: 10px; width: auto; max-width: 600px; padding: 10px; background-color: white;`;
     node.style.position = `absolute`;
@@ -67,7 +67,7 @@
   };
 
   const render = () => {
-    window.backend.load(onLoadSuccess, errorHandler);
+    window.backend.load(onLoadSuccess, onLoadError);
   };
 
   const activateMap = () => {
@@ -107,12 +107,9 @@
 
   window.map = {
     getIsPageActive,
-    resetPage,
     init,
     activateMap,
     fullReset,
-    errorHandler,
-    resetMainPin,
     block
   };
 

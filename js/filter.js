@@ -2,18 +2,19 @@
 
 (() => {
   const ANY_VALUE = `any`;
+  const COUNT_PIN = 5;
 
   const PriceValue = {
-    middleMin: 10000,
-    middleMax: 50000,
-    low: 10000,
-    high: 50000
+    MIDDLE_MIN: 10000,
+    MIDDLE_MAX: 50000,
+    LOW: 10000,
+    HIGH: 50000
   };
 
   const PriceName = {
-    middle: `middle`,
-    low: `low`,
-    high: `high`
+    MIDDLE: `middle`,
+    LOW: `low`,
+    HIGH: `high`
   };
 
   const isAvaliableHouseType = (pin, housingType) => {
@@ -22,9 +23,9 @@
 
   const isAvaliablePrice = (pin, housingPrice) => {
     switch (housingPrice) {
-      case PriceName.middle: return pin.offer.price >= PriceValue.middleMin && pin.offer.price <= PriceValue.middleMax;
-      case PriceName.low: return pin.offer.price < PriceValue.low;
-      case PriceName.high: return pin.offer.price > PriceValue.high;
+      case PriceName.MIDDLE: return pin.offer.price >= PriceValue.MIDDLE_MIN && pin.offer.price <= PriceValue.MIDDLE_MAX;
+      case PriceName.LOW: return pin.offer.price < PriceValue.LOW;
+      case PriceName.HIGH: return pin.offer.price > PriceValue.HIGH;
       default: return housingPrice === ANY_VALUE;
     }
   };
@@ -53,7 +54,7 @@
       if (isFiltred) {
         result.push(pin);
 
-        if (result.length === 5) {
+        if (result.length === COUNT_PIN) {
           break;
         }
       }

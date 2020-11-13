@@ -222,6 +222,7 @@
 
   const onLoadSuccess = () => {
     fullReset();
+    window.photos.reset();
     renderMessage(successPopup);
     addEventMessage();
   };
@@ -240,26 +241,28 @@
   };
 
   const addEventMessage = () => {
-    document.addEventListener(`keydown`, function (evt) {
+    document.addEventListener(`keydown`, (evt) => {
       if (evt.keyCode === 27) {
         evt.preventDefault();
         closePopupMessage();
       }
     });
 
-    document.addEventListener(`click`, function () {
+    document.addEventListener(`click`, () => {
       closePopupMessage();
     });
   };
 
-  const submitHandler = (evt) => {
+  const onFormSubmit = (evt) => {
     window.backend.upload(new FormData(formInfo), onLoadSuccess, onLoadError);
     evt.preventDefault();
   };
 
-  resetForm.addEventListener(`click`, fullReset);
+  resetForm.addEventListener(`click`, () => {
+    fullReset();
+  });
 
-  formInfo.addEventListener(`submit`, submitHandler);
+  formInfo.addEventListener(`submit`, onFormSubmit);
 
 
   const init = () => {
