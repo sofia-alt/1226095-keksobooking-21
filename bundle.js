@@ -222,7 +222,7 @@ const SizePin = {
   HEIGHT: 70
 };
 
-const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+const template = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
 let elementActive = null;
 
@@ -249,7 +249,7 @@ const addActiveClass = (element) => {
 
 const getElement = (pin) => {
   const {location: {x, y}} = pin;
-  const element = pinTemplate.cloneNode(true);
+  const element = template.cloneNode(true);
   element.querySelector(`img`).src = pin.author.avatar;
 
   element.style.left = `${x - Math.floor(SizePin.WIDTH / 2)}px`;
@@ -262,8 +262,7 @@ const getElement = (pin) => {
 
 window.pin = {
   getElement,
-  resetActiveElement,
-  pinTemplate
+  resetActiveElement
 };
 
 
@@ -296,6 +295,8 @@ const resetForm = formInfo.querySelector(`.ad-form__reset`);
 const errorPopup = document.querySelector(`#error`).content.querySelector(`.error`);
 const successPopup = document.querySelector(`#success`).content.querySelector(`.success`);
 
+const submitButton = formInfo.querySelector(`.ad-form__submit`);
+
 const ESC_KEY = 27;
 
 const RoomValue = {
@@ -309,7 +310,7 @@ const CapacityValue = {
   ONE: 1,
   TWO: 2,
   THREE: 3,
-  NOTGUEST: 0
+  ZERO: 0
 };
 
 const TitleLength = {
@@ -361,9 +362,9 @@ const validateRooms = () => {
     message = `Неверное количество комнат`;
   } else if (roomValue === RoomValue.TWO && !(capacityValue === CapacityValue.ONE || capacityValue === CapacityValue.TWO)) {
     message = `Неверное количество комнат`;
-  } else if (roomValue === RoomValue.THREE && capacityValue === CapacityValue.NOTGUEST) {
+  } else if (roomValue === RoomValue.THREE && capacityValue === CapacityValue.ZERO) {
     message = `Неверное количество комнат`;
-  } else if (roomValue === RoomValue.HUNDER && capacityValue !== CapacityValue.NOTGUEST) {
+  } else if (roomValue === RoomValue.HUNDER && capacityValue !== CapacityValue.ZERO) {
     message = `Неверное количество комнат`;
   }
 
@@ -382,7 +383,7 @@ const validateCapacity = () => {
     message = `Неверное количество гостей`;
   } else if (capacityValue === CapacityValue.THREE && roomValue !== RoomValue.THREE) {
     message = `Неверное количество гостей`;
-  } else if (capacityValue === CapacityValue.NOTGUEST && roomValue !== RoomValue.HUNDER) {
+  } else if (capacityValue === CapacityValue.ZERO && roomValue !== RoomValue.HUNDER) {
     message = `Неверное количество гостей`;
   }
   capacity.setCustomValidity(message);
@@ -522,8 +523,10 @@ const removeEventMessage = () => {
 };
 
 const onFormSubmit = (evt) => {
-  window.backend.upload(new FormData(formInfo), onLoadSuccess, onLoadError);
   evt.preventDefault();
+  resetForm.blur();
+  submitButton.blur();
+  window.backend.upload(new FormData(formInfo), onLoadSuccess, onLoadError);
 };
 
 resetForm.addEventListener(`click`, () => {
@@ -1003,4 +1006,3 @@ window.photos.init();
 
 /******/ })()
 ;
-//# sourceMappingURL=bundle.js.map
