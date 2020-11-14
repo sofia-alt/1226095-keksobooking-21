@@ -51,11 +51,19 @@ const addPopupPhotos = (photosElement, photos) => {
   });
 };
 
+const onBlockKeyDown = (evt) => {
+  if (evt.keyCode === ESC_KEY) {
+    evt.preventDefault();
+    closePopup();
+  }
+};
+
 const closePopup = () => {
   if (popupElement !== null) {
     popupElement.remove();
     popupElement = null;
     window.pin.resetActiveElement();
+    window.map.block.removeEventListener(`keydown`, onBlockKeyDown);
   }
 };
 
@@ -89,13 +97,9 @@ const renderPopup = (pin) => {
     closePopup();
   });
 
-  window.map.block.addEventListener(`keydown`, (evt) => {
-    if (evt.keyCode === ESC_KEY) {
-      evt.preventDefault();
-      closePopup();
-    }
-  });
+  window.map.block.addEventListener(`keydown`, onBlockKeyDown);
 };
+
 
 window.card = {
   renderPopup,

@@ -31,6 +31,12 @@ const StartLocationMainPin = {
 
 const pin = () => {
 
+  pinMain.addEventListener(`keydown`, () => {
+    if (!window.map.getIsPageActive()) {
+      window.map.activate();
+    }
+  });
+
   pinMain.addEventListener(`mousedown`, (evt) => {
     evt.preventDefault();
 
