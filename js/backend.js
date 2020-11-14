@@ -1,7 +1,7 @@
 "use strict";
 
-const URLLOAD = `https://21.javascript.pages.academy/keksobooking/data`;
-const URLUPLOAD = `https://21.javascript.pages.academy/keksobooking`;
+const URL_LOAD = `https://21.javascript.pages.academy/keksobooking/data`;
+const URL_UPLOAD = `https://21.javascript.pages.academy/keksobooking`;
 
 const TIMEOUT_IN_MS = 10000;
 
@@ -60,14 +60,14 @@ const getInstance = (onSuccess, onError) => {
 const load = (onSuccess, onError) => {
   const xhr = getInstance(onSuccess, onError);
 
-  xhr.open(HttpRequest.GET, URLLOAD);
+  xhr.open(HttpRequest.GET, URL_LOAD);
   xhr.send();
 };
 
 const upload = (data, onSuccess, onError) => {
   const xhr = getInstance(onSuccess, onError);
 
-  xhr.open(HttpRequest.POST, URLUPLOAD);
+  xhr.open(HttpRequest.POST, URL_UPLOAD);
   xhr.send(data);
 };
 

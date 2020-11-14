@@ -4,19 +4,19 @@ const DEBOUNCE_INTERVAL = 500;
 
 const changeDisabledElemetsForm = (elements) => {
   const isPageActive = window.map.getIsPageActive();
-  for (let i = 0; i < elements.length; i++) {
-    elements[i].disabled = !isPageActive;
-  }
+  Array.from(elements).forEach((element) => {
+    element.disabled = !isPageActive;
+  });
 };
 
 const debounce = (cb) => {
   let lastTimeout = null;
 
-  return function (...parameters) {
+  return (...parameters) => {
     if (lastTimeout) {
       window.clearTimeout(lastTimeout);
     }
-    lastTimeout = window.setTimeout(function () {
+    lastTimeout = window.setTimeout(() => {
       cb(...parameters);
     }, DEBOUNCE_INTERVAL);
   };

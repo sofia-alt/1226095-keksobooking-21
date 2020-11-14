@@ -6,7 +6,7 @@ const pinMain = document.querySelector(`.map__pin--main`);
 const SizeMainPin = {
   WIDTH: 65,
   HEIGHT: 65,
-  FULLHEIGHT: 87
+  FULL_HEIGHT: 87
 };
 
 const partSizeWidth = Math.floor(SizeMainPin.WIDTH / 2);
@@ -20,13 +20,13 @@ const LocationCheckpoint = {
 const LocationLimit = {
   X_MIN: LocationCheckpoint.X_MIN - partSizeWidth,
   X_MAX: mapOverlay.offsetWidth - partSizeWidth,
-  Y_MIN: LocationCheckpoint.Y_MIN - SizeMainPin.FULLHEIGHT,
-  Y_MAX: LocationCheckpoint.Y_MAX - SizeMainPin.FULLHEIGHT
+  Y_MIN: LocationCheckpoint.Y_MIN - SizeMainPin.FULL_HEIGHT,
+  Y_MAX: LocationCheckpoint.Y_MAX - SizeMainPin.FULL_HEIGHT
 };
 
 const StartLocationMainPin = {
-  left: 570,
-  top: 375
+  LEFT: 570,
+  TOP: 375
 };
 
 const pin = () => {
@@ -35,7 +35,7 @@ const pin = () => {
     evt.preventDefault();
 
     if (!window.map.getIsPageActive()) {
-      window.map.activateMap();
+      window.map.activate();
     }
 
     let startCoords = {
@@ -97,7 +97,7 @@ const pin = () => {
 
 const getAddress = (offsetLeft, offsetTop) => {
   let valueX = offsetLeft + partSizeWidth;
-  let valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : SizeMainPin.FULLHEIGHT);
+  let valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : SizeMainPin.FULL_HEIGHT);
 
   return {
     valueX, valueY
@@ -105,8 +105,8 @@ const getAddress = (offsetLeft, offsetTop) => {
 };
 
 const resetMainPin = () => {
-  pinMain.style.left = StartLocationMainPin.left + `px`;
-  pinMain.style.top = StartLocationMainPin.top + `px`;
+  pinMain.style.left = StartLocationMainPin.LEFT + `px`;
+  pinMain.style.top = StartLocationMainPin.TOP + `px`;
 };
 
 const updateAddress = () => {

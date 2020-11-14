@@ -3,6 +3,11 @@
 const ANY_VALUE = `any`;
 const COUNT_PIN = 5;
 
+const housingTypeElement = document.querySelector(`.map__filters #housing-type`);
+const housingPriceElement = document.querySelector(`.map__filters #housing-price`);
+const housingRoomsElement = document.querySelector(`.map__filters #housing-rooms`);
+const housingGuestsElement = document.querySelector(`.map__filters #housing-guests`);
+
 const PriceValue = {
   MIDDLE_MIN: 10000,
   MIDDLE_MAX: 50000,
@@ -14,6 +19,10 @@ const PriceName = {
   MIDDLE: `middle`,
   LOW: `low`,
   HIGH: `high`
+};
+
+const getHousingFeatures = () => {
+  return Array.from(document.querySelectorAll(`.map__filters #housing-features input:checked`));
 };
 
 const isAvaliableHouseType = (pin, housingType) => {
@@ -38,17 +47,17 @@ const isAvaliableGuests = (pin, housingGuests) => {
 };
 
 const isAvaliableFeatures = (pin, housingFeatures) => {
-  return housingFeatures.every((feature) => pin.offer.features.includes(feature));
+  return housingFeatures.every((feature) => pin.offer.features.includes(feature.value));
 };
 
-const getFiltred = (pins, housingType, housingPrice, housingRooms, housingGuests, housingFeatures) => {
+const getResult = (pins) => {
   const result = [];
 
   for (let i = 0; i < pins.length; i++) {
     const pin = pins[i];
 
-    const isFiltred = isAvaliableHouseType(pin, housingType) && isAvaliablePrice(pin, housingPrice) && isAvaliableRooms(pin, housingRooms) && isAvaliableGuests(pin, housingGuests)
-      && isAvaliableFeatures(pin, housingFeatures);
+    const isFiltred = isAvaliableHouseType(pin, housingTypeElement.value) && isAvaliablePrice(pin, housingPriceElement.value) && isAvaliableRooms(pin, housingRoomsElement.value) && isAvaliableGuests(pin, housingGuestsElement.value)
+      && isAvaliableFeatures(pin, getHousingFeatures());
 
     if (isFiltred) {
       result.push(pin);
@@ -63,5 +72,5 @@ const getFiltred = (pins, housingType, housingPrice, housingRooms, housingGuests
 };
 
 window.filter = {
-  getFiltred
+  getResult
 };

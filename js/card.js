@@ -1,7 +1,5 @@
 "use strict";
 
-let popupElement = null;
-
 const popupTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const ESC_KEY = 27;
 
@@ -12,12 +10,14 @@ const OfferType = {
   PALACE: `palace`
 };
 
-const OfferTypesDictionary = {
+const offerTypesDictionary = {
   [OfferType.FLAT]: `Квартира`,
   [OfferType.BUNGALOW]: `Бунгало`,
   [OfferType.HOUSE]: `Дом`,
   [OfferType.PALACE]: `Дворец`,
 };
+
+let popupElement = null;
 
 const addPopupFeatures = (featuresElement, features) => {
   if (!features.length) {
@@ -55,6 +55,7 @@ const closePopup = () => {
   if (popupElement !== null) {
     popupElement.remove();
     popupElement = null;
+    window.pin.resetActiveElement();
   }
 };
 
@@ -69,7 +70,7 @@ const renderPopup = (pin) => {
   popupElement.querySelector(`.popup__text--address`).textContent = address;
   popupElement.querySelector(`.popup__text--price`).textContent = `${price}₽/ночь`;
 
-  popupElement.querySelector(`.popup__type`).textContent = OfferTypesDictionary[type];
+  popupElement.querySelector(`.popup__type`).textContent = offerTypesDictionary[type];
   popupElement.querySelector(`.popup__text--capacity`).textContent = `${rooms} комнаты для ${guests} гостей`;
   popupElement.querySelector(`.popup__text--time`).textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
 

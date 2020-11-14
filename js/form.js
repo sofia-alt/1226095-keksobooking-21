@@ -21,8 +21,6 @@ const successPopup = document.querySelector(`#success`).content.querySelector(`.
 
 const ESC_KEY = 27;
 
-let popupMessage = null;
-
 const RoomValue = {
   ONE: 1,
   TWO: 2,
@@ -34,7 +32,7 @@ const CapacityValue = {
   ONE: 1,
   TWO: 2,
   THREE: 3,
-  NOTGUEST: 0
+  ZERO: 0
 };
 
 const TitleLength = {
@@ -50,6 +48,7 @@ const MinPriceHousing = {
 };
 
 let housingValidationInfo;
+let popupMessage = null;
 
 const initHousingValidationInfo = () => {
   housingValidationInfo = {
@@ -85,9 +84,9 @@ const validateRooms = () => {
     message = `Неверное количество комнат`;
   } else if (roomValue === RoomValue.TWO && !(capacityValue === CapacityValue.ONE || capacityValue === CapacityValue.TWO)) {
     message = `Неверное количество комнат`;
-  } else if (roomValue === RoomValue.THREE && capacityValue === CapacityValue.NOTGUEST) {
+  } else if (roomValue === RoomValue.THREE && capacityValue === CapacityValue.ZERO) {
     message = `Неверное количество комнат`;
-  } else if (roomValue === RoomValue.HUNDER && capacityValue !== CapacityValue.NOTGUEST) {
+  } else if (roomValue === RoomValue.HUNDER && capacityValue !== CapacityValue.ZERO) {
     message = `Неверное количество комнат`;
   }
 
@@ -106,7 +105,7 @@ const validateCapacity = () => {
     message = `Неверное количество гостей`;
   } else if (capacityValue === CapacityValue.THREE && roomValue !== RoomValue.THREE) {
     message = `Неверное количество гостей`;
-  } else if (capacityValue === CapacityValue.NOTGUEST && roomValue !== RoomValue.HUNDER) {
+  } else if (capacityValue === CapacityValue.ZERO && roomValue !== RoomValue.HUNDER) {
     message = `Неверное количество гостей`;
   }
   capacity.setCustomValidity(message);
@@ -114,7 +113,7 @@ const validateCapacity = () => {
 };
 
 const addEventTitle = () => {
-  titleInput.addEventListener(`input`, function () {
+  titleInput.addEventListener(`input`, () => {
     let valueLength = titleInput.value.length;
 
     if (valueLength < TitleLength.MIN_LENGTH) {
@@ -148,7 +147,7 @@ const validateHousingType = () => {
 };
 
 const addEventFrom = () => {
-  formInfo.addEventListener(`change`, function (evt) {
+  formInfo.addEventListener(`change`, (evt) => {
     switch (evt.target.id) {
       case roomNumber.id:
         validateRooms();
@@ -163,7 +162,9 @@ const addEventFrom = () => {
         validateTimein();
         break;
       case typeHousing.id:
+      case priceHousing.id:
         validateHousingType();
+        initHousingValidationInfo();
         break;
     }
 
@@ -180,6 +181,7 @@ const activate = () => {
 const resetInput = () => {
   formInfo.reset();
   window.move.updateAddress();
+  priceHousing.placeholder = MinPriceHousing.FLAT;
 };
 
 const reset = () => {

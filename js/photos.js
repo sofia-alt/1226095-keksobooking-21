@@ -1,6 +1,7 @@
 "use strict";
 
 const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
+const DEFAULT_PICTURES = `img/muffin-grey.svg`;
 
 const fileChooserAvatar = document.querySelector(`.ad-form__field input[type=file]`);
 const previewAvatar = document.querySelector(`.ad-form-header__preview img`);
@@ -23,7 +24,7 @@ const loadPreviewHouse = (result) => {
 
 const reset = () => {
   imgHouse.remove();
-  previewAvatar.src = `img/muffin-grey.svg`;
+  previewAvatar.src = DEFAULT_PICTURES;
 };
 
 const onLoadChange = (evt, cb) => {
