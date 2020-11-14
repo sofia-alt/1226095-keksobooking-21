@@ -3,6 +3,7 @@
 const pinsContainer = document.querySelector(`.map__pins`);
 const block = document.querySelector(`.map`);
 const mapFilters = document.querySelector(`.map__filters`);
+const selectMapFilters = mapFilters.getElementsByTagName(`select`);
 const housingType = mapFilters.querySelector(`#housing-type`);
 const housingPrice = mapFilters.querySelector(`#housing-price`);
 const housingRooms = mapFilters.querySelector(`#housing-rooms`);
@@ -63,6 +64,7 @@ const activateMap = () => {
   isPageActive = true;
   block.classList.remove(`map--faded`);
   window.form.activate();
+  window.utils.changeDisabledElemetsForm(selectMapFilters);
   render();
 };
 
@@ -87,6 +89,8 @@ const fullReset = () => {
   resetPins();
   window.move.resetMainPin();
   resetPage();
+  mapFilters.reset();
+  window.utils.changeDisabledElemetsForm(selectMapFilters);
 };
 
 const init = () => {

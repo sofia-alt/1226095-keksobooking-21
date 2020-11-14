@@ -1,12 +1,7 @@
 "use strict";
 
-const MAX_PRICE_HOUSING = 1000000;
-
 const formInfo = document.querySelector(`.ad-form`);
 const fieldsetFormInfo = formInfo.getElementsByTagName(`fieldset`);
-const mapFilters = document.querySelector(`.map__filters`);
-const selectMapFilters = mapFilters.getElementsByTagName(`select`);
-
 const roomNumber = formInfo.querySelector(`#room_number`);
 const capacity = formInfo.querySelector(`#capacity`);
 
@@ -81,20 +76,6 @@ const initHousingValidationInfo = () => {
   };
 };
 
-const changeElementDisabledMapFilters = (elements) => {
-  const isPageActive = window.map.getIsPageActive();
-  for (let i = 0; i < elements.length; i++) {
-    elements[i].disabled = !isPageActive;
-  }
-};
-
-const changeElementDisabledFormInfo = (elements) => {
-  const isPageActive = window.map.getIsPageActive();
-  for (let i = 0; i < elements.length; i++) {
-    elements[i].disabled = !isPageActive;
-  }
-};
-
 const validateRooms = () => {
   const roomValue = parseInt(roomNumber.value, 10);
   const capacityValue = parseInt(capacity.value, 10);
@@ -157,8 +138,6 @@ const validateTimeout = () => {
 };
 
 const validateHousingType = () => {
-  priceHousing.max = MAX_PRICE_HOUSING;
-
   const {min, message, placeholder} = housingValidationInfo[typeHousing.value];
   priceHousing.placeholder = placeholder;
   const priceHousingValue = parseInt(priceHousing.value, 10);
@@ -194,21 +173,18 @@ const addEventFrom = () => {
 
 const activate = () => {
   formInfo.classList.remove(`ad-form--disabled`);
-  changeElementDisabledFormInfo(fieldsetFormInfo);
-  changeElementDisabledMapFilters(selectMapFilters);
+  window.utils.changeDisabledElemetsForm(fieldsetFormInfo);
   window.move.updateAddress();
 };
 
 const resetInput = () => {
   formInfo.reset();
-  mapFilters.reset();
   window.move.updateAddress();
 };
 
 const reset = () => {
   formInfo.classList.add(`ad-form--disabled`);
-  changeElementDisabledFormInfo(fieldsetFormInfo);
-  changeElementDisabledMapFilters(selectMapFilters);
+  window.utils.changeDisabledElemetsForm(fieldsetFormInfo);
   window.move.updateAddress();
 };
 
@@ -245,23 +221,25 @@ const closePopupMessage = () => {
   }
 };
 
-const onKeyDown = (evt) => {
+const onDocumentKeyDown = (evt) => {
   if (evt.keyCode === ESC_KEY) {
     evt.preventDefault();
     closePopupMessage();
   }
 };
 
-const onClick = closePopupMessage;
+const onDocumentClick = () => {
+  closePopupMessage();
+};
 
 const addEventMessage = () => {
-  document.addEventListener(`keydown`, onKeyDown);
-  document.addEventListener(`click`, onClick);
+  document.addEventListener(`keydown`, onDocumentKeyDown);
+  document.addEventListener(`click`, onDocumentClick);
 };
 
 const removeEventMessage = () => {
-  document.removeEventListener(`keydown`, onKeyDown);
-  document.removeEventListener(`click`, onClick);
+  document.removeEventListener(`keydown`, onDocumentKeyDown);
+  document.removeEventListener(`click`, onDocumentClick);
 };
 
 const onFormSubmit = (evt) => {

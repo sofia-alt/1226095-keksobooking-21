@@ -12,6 +12,11 @@ const StatusCode = {
   NOT_FOUND: 404
 };
 
+const HttpRequest = {
+  GET: `GET`,
+  POST: `POST`
+};
+
 const getInstance = (onSuccess, onError) => {
   let xhr = new XMLHttpRequest();
   xhr.responseType = `json`;
@@ -55,14 +60,14 @@ const getInstance = (onSuccess, onError) => {
 const load = (onSuccess, onError) => {
   const xhr = getInstance(onSuccess, onError);
 
-  xhr.open(`GET`, URLLOAD);
+  xhr.open(HttpRequest.GET, URLLOAD);
   xhr.send();
 };
 
 const upload = (data, onSuccess, onError) => {
   const xhr = getInstance(onSuccess, onError);
 
-  xhr.open(`POST`, URLUPLOAD);
+  xhr.open(HttpRequest.POST, URLUPLOAD);
   xhr.send(data);
 };
 
