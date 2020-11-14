@@ -24,6 +24,8 @@ const resetForm = formInfo.querySelector(`.ad-form__reset`);
 const errorPopup = document.querySelector(`#error`).content.querySelector(`.error`);
 const successPopup = document.querySelector(`#success`).content.querySelector(`.success`);
 
+const ESC_KEY = 27;
+
 let popupMessage = null;
 
 const RoomValue = {
@@ -80,14 +82,16 @@ const initHousingValidationInfo = () => {
 };
 
 const changeElementDisabledMapFilters = (elements) => {
+  const isPageActive = window.map.getIsPageActive();
   for (let i = 0; i < elements.length; i++) {
-    elements[i].disabled = !window.map.getIsPageActive();
+    elements[i].disabled = !isPageActive;
   }
 };
 
 const changeElementDisabledFormInfo = (elements) => {
+  const isPageActive = window.map.getIsPageActive();
   for (let i = 0; i < elements.length; i++) {
-    elements[i].disabled = !window.map.getIsPageActive();
+    elements[i].disabled = !isPageActive;
   }
 };
 
@@ -95,7 +99,7 @@ const validateRooms = () => {
   const roomValue = parseInt(roomNumber.value, 10);
   const capacityValue = parseInt(capacity.value, 10);
 
-  let message = ` `;
+  let message = ``;
   if (roomValue === RoomValue.ONE && capacityValue !== CapacityValue.ONE) {
     message = `Неверное количество комнат`;
   } else if (roomValue === RoomValue.TWO && !(capacityValue === CapacityValue.ONE || capacityValue === CapacityValue.TWO)) {
@@ -197,6 +201,7 @@ const activate = () => {
 
 const resetInput = () => {
   formInfo.reset();
+  mapFilters.reset();
   window.move.updateAddress();
 };
 
@@ -210,6 +215,7 @@ const reset = () => {
 const fullReset = () => {
   window.map.fullReset();
   window.card.closePopup();
+  window.photos.reset();
   reset();
   resetInput();
 };
@@ -221,7 +227,6 @@ const renderMessage = (messageType) => {
 
 const onLoadSuccess = () => {
   fullReset();
-  window.photos.reset();
   renderMessage(successPopup);
   addEventMessage();
 };
@@ -236,20 +241,27 @@ const closePopupMessage = () => {
   if (popupMessage !== null) {
     popupMessage.remove();
     popupMessage = null;
+    removeEventMessage();
   }
 };
 
-const addEventMessage = () => {
-  document.addEventListener(`keydown`, (evt) => {
-    if (evt.keyCode === 27) {
-      evt.preventDefault();
-      closePopupMessage();
-    }
-  });
-
-  document.addEventListener(`click`, () => {
+const onKeyDown = (evt) => {
+  if (evt.keyCode === ESC_KEY) {
+    evt.preventDefault();
     closePopupMessage();
-  });
+  }
+};
+
+const onClick = closePopupMessage;
+
+const addEventMessage = () => {
+  document.addEventListener(`keydown`, onKeyDown);
+  document.addEventListener(`click`, onClick);
+};
+
+const removeEventMessage = () => {
+  document.removeEventListener(`keydown`, onKeyDown);
+  document.removeEventListener(`click`, onClick);
 };
 
 const onFormSubmit = (evt) => {
@@ -260,6 +272,10 @@ const onFormSubmit = (evt) => {
 resetForm.addEventListener(`click`, () => {
   fullReset();
 });
+
+const setAddress = ({valueX, valueY}) => {
+  address.value = `${valueX}, ${valueY}`;
+};
 
 formInfo.addEventListener(`submit`, onFormSubmit);
 
@@ -278,6 +294,6 @@ const init = () => {
 window.form = {
   activate,
   init,
-  address
+  setAddress
 };
 

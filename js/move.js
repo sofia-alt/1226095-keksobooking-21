@@ -11,11 +11,22 @@ const SizeMainPin = {
 
 const partSizeWidth = Math.floor(SizeMainPin.WIDTH / 2);
 
+const LocationCheckpoint = {
+  X_MIN: 0,
+  Y_MIN: 130,
+  Y_MAX: 630
+};
+
 const LocationLimit = {
-  X_MIN: 0 - partSizeWidth,
+  X_MIN: LocationCheckpoint.X_MIN - partSizeWidth,
   X_MAX: mapOverlay.offsetWidth - partSizeWidth,
-  Y_MIN: 130 - SizeMainPin.FULLHEIGHT,
-  Y_MAX: 630 - SizeMainPin.FULLHEIGHT
+  Y_MIN: LocationCheckpoint.Y_MIN - SizeMainPin.FULLHEIGHT,
+  Y_MAX: LocationCheckpoint.Y_MAX - SizeMainPin.FULLHEIGHT
+};
+
+const StartLocationMainPin = {
+  left: 570,
+  top: 375
 };
 
 const pin = () => {
@@ -59,7 +70,7 @@ const pin = () => {
         if (isAddressValid) {
           pinMain.style.left = (offsetLeft) + `px`;
           pinMain.style.top = (offsetTop) + `px`;
-          setAddress(getAddress(offsetLeft, offsetTop));
+          window.form.setAddress(getAddress(offsetLeft, offsetTop));
         }
       };
       pinMove();
@@ -83,11 +94,6 @@ const pin = () => {
     document.addEventListener(`mouseup`, onMouseUp);
   });
 };
-const setAddress = ({valueX, valueY}) => {
-  window.form.address.value = `${valueX}, ${valueY}`;
-  window.form.address.readOnly = true;
-};
-
 
 const getAddress = (offsetLeft, offsetTop) => {
   let valueX = offsetLeft + partSizeWidth;
@@ -98,13 +104,18 @@ const getAddress = (offsetLeft, offsetTop) => {
   };
 };
 
+const resetMainPin = () => {
+  pinMain.style.left = StartLocationMainPin.left + `px`;
+  pinMain.style.top = StartLocationMainPin.top + `px`;
+};
+
 const updateAddress = () => {
   const {offsetLeft, offsetTop} = pinMain;
-  setAddress(getAddress(offsetLeft, offsetTop));
+  window.form.setAddress(getAddress(offsetLeft, offsetTop));
 };
 
 window.move = {
   pin,
   updateAddress,
-  pinMain
+  resetMainPin
 };

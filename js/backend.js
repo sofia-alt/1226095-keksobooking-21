@@ -5,6 +5,13 @@ const URLUPLOAD = `https://21.javascript.pages.academy/keksobooking`;
 
 const TIMEOUT_IN_MS = 10000;
 
+const StatusCode = {
+  OK: 200,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  NOT_FOUND: 404
+};
+
 const getInstance = (onSuccess, onError) => {
   let xhr = new XMLHttpRequest();
   xhr.responseType = `json`;
@@ -12,16 +19,16 @@ const getInstance = (onSuccess, onError) => {
   xhr.addEventListener(`load`, () => {
     let error;
     switch (xhr.status) {
-      case 200:
+      case StatusCode.OK:
         onSuccess(xhr.response);
         break;
-      case 400:
+      case StatusCode.BAD_REQUEST:
         error = `Неверный запрос`;
         break;
-      case 401:
+      case StatusCode.UNAUTHORIZED:
         error = `Пользователь не авторизован`;
         break;
-      case 404:
+      case StatusCode.NOT_FOUND:
         error = `Ничего не найдено`;
         break;
 

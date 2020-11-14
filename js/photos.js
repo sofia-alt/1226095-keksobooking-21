@@ -22,7 +22,7 @@ const loadPreviewHouse = (result) => {
 };
 
 const reset = () => {
-  previewHouse.remove(imgHouse);
+  imgHouse.remove();
   previewAvatar.src = `img/muffin-grey.svg`;
 };
 

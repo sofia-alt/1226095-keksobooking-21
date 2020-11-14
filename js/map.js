@@ -2,21 +2,16 @@
 
 const pinsContainer = document.querySelector(`.map__pins`);
 const block = document.querySelector(`.map`);
-const mapFiltres = document.querySelector(`.map__filters`);
-const housingType = mapFiltres.querySelector(`#housing-type`);
-const housingPrice = mapFiltres.querySelector(`#housing-price`);
-const housingRooms = mapFiltres.querySelector(`#housing-rooms`);
-const housingGuests = mapFiltres.querySelector(`#housing-guests`);
+const mapFilters = document.querySelector(`.map__filters`);
+const housingType = mapFilters.querySelector(`#housing-type`);
+const housingPrice = mapFilters.querySelector(`#housing-price`);
+const housingRooms = mapFilters.querySelector(`#housing-rooms`);
+const housingGuests = mapFilters.querySelector(`#housing-guests`);
 
 let isPageActive = false;
 
 let pinElements = [];
 let items = [];
-
-const StartLocationMainPin = {
-  left: 570,
-  top: 375
-};
 
 const renderPins = (pins) => {
   const fragment = document.createDocumentFragment();
@@ -39,11 +34,6 @@ const resetPins = () => {
   pinElements = [];
 };
 
-const resetMainPin = () => {
-  window.move.pinMain.style.left = StartLocationMainPin.left + `px`;
-  window.move.pinMain.style.top = StartLocationMainPin.top + `px`;
-};
-
 const onLoadError = (errorMessage) => {
   const node = document.createElement(`p`);
   node.style = `z-index: 100; margin: 100px auto; text-align: center; border: 3px solid red; font-size: 30px; border-radius: 10px; width: auto; max-width: 600px; padding: 10px; background-color: white;`;
@@ -57,7 +47,7 @@ const onLoadError = (errorMessage) => {
 };
 
 const getHousingFeatures = () => {
-  return Array.from(mapFiltres.querySelectorAll(`#housing-features input:checked`)).map((item) => item.value);
+  return Array.from(mapFilters.querySelectorAll(`#housing-features input:checked`)).map((item) => item.value);
 };
 
 const onLoadSuccess = (pins) => {
@@ -86,7 +76,7 @@ const getIsPageActive = () => {
 };
 
 const changeFilters = () => {
-  mapFiltres.addEventListener(`change`, window.debounce(() => {
+  mapFilters.addEventListener(`change`, window.debounce(() => {
     resetPins();
     window.card.closePopup();
     renderPins(window.filter.getFiltred(items, housingType.value, housingPrice.value, housingRooms.value, housingGuests.value, getHousingFeatures()));
@@ -95,7 +85,7 @@ const changeFilters = () => {
 
 const fullReset = () => {
   resetPins();
-  resetMainPin();
+  window.move.resetMainPin();
   resetPage();
 };
 

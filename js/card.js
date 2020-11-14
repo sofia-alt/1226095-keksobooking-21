@@ -3,6 +3,7 @@
 let popupElement = null;
 
 const popupTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const ESC_KEY = 27;
 
 const OfferType = {
   FLAT: `flat`,
@@ -25,7 +26,7 @@ const addPopupFeatures = (featuresElement, features) => {
   }
 
   const featureTemplate = featuresElement.querySelector(`.popup__feature`);
-  featuresElement.innerHTML = ` `;
+  featuresElement.innerHTML = ``;
 
   features.forEach((feature) => {
     const featureElement = featureTemplate.cloneNode(true);
@@ -41,7 +42,7 @@ const addPopupPhotos = (photosElement, photos) => {
   }
 
   const photoTemplate = photosElement.querySelector(`.popup__photo`);
-  photosElement.innerHTML = ` `;
+  photosElement.innerHTML = ``;
 
   photos.forEach((photo) => {
     const photoElement = photoTemplate.cloneNode(true);
@@ -60,22 +61,24 @@ const closePopup = () => {
 const renderPopup = (pin) => {
   closePopup();
 
+  const {offer: {title, address, price, type, rooms, guests, checkin, checkout, features, description, photos}, author: {avatar}} = pin;
+
   popupElement = popupTemplate.cloneNode(true);
 
-  popupElement.querySelector(`.popup__title`).textContent = pin.offer.title;
-  popupElement.querySelector(`.popup__text--address`).textContent = pin.offer.address;
-  popupElement.querySelector(`.popup__text--price`).textContent = `${pin.offer.price}₽/ночь`;
+  popupElement.querySelector(`.popup__title`).textContent = title;
+  popupElement.querySelector(`.popup__text--address`).textContent = address;
+  popupElement.querySelector(`.popup__text--price`).textContent = `${price}₽/ночь`;
 
-  popupElement.querySelector(`.popup__type`).textContent = OfferTypesDictionary[pin.offer.type];
-  popupElement.querySelector(`.popup__text--capacity`).textContent = `${pin.offer.rooms} комнаты для ${pin.offer.guests} гостей`;
-  popupElement.querySelector(`.popup__text--time`).textContent = `Заезд после ${pin.offer.checkin}, выезд до ${pin.offer.checkout}`;
+  popupElement.querySelector(`.popup__type`).textContent = OfferTypesDictionary[type];
+  popupElement.querySelector(`.popup__text--capacity`).textContent = `${rooms} комнаты для ${guests} гостей`;
+  popupElement.querySelector(`.popup__text--time`).textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
 
-  popupElement.querySelector(`.popup__avatar`).src = pin.author.avatar;
+  popupElement.querySelector(`.popup__avatar`).src = avatar;
 
-  addPopupFeatures(popupElement.querySelector(`.popup__features`), pin.offer.features);
-  popupElement.querySelector(`.popup__description`).textContent = pin.offer.description;
+  addPopupFeatures(popupElement.querySelector(`.popup__features`), features);
+  popupElement.querySelector(`.popup__description`).textContent = description;
 
-  addPopupPhotos(popupElement.querySelector(`.popup__photos`), pin.offer.photos);
+  addPopupPhotos(popupElement.querySelector(`.popup__photos`), photos);
 
   window.map.block.appendChild(popupElement);
 
@@ -86,7 +89,7 @@ const renderPopup = (pin) => {
   });
 
   window.map.block.addEventListener(`keydown`, (evt) => {
-    if (evt.keyCode === 27) {
+    if (evt.keyCode === ESC_KEY) {
       evt.preventDefault();
       closePopup();
     }
