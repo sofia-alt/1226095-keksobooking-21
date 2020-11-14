@@ -295,8 +295,6 @@ const resetForm = formInfo.querySelector(`.ad-form__reset`);
 const errorPopup = document.querySelector(`#error`).content.querySelector(`.error`);
 const successPopup = document.querySelector(`#success`).content.querySelector(`.success`);
 
-const submitButton = formInfo.querySelector(`.ad-form__submit`);
-
 const ESC_KEY = 27;
 
 const RoomValue = {
@@ -513,7 +511,7 @@ const onDocumentClick = () => {
 };
 
 const addEventMessage = () => {
-  document.addEventListener(`keydown`, onDocumentKeyDown);
+  document.addEventListener(`keydown`, onDocumentKeyDown, true);
   document.addEventListener(`click`, onDocumentClick);
 };
 
@@ -524,8 +522,6 @@ const removeEventMessage = () => {
 
 const onFormSubmit = (evt) => {
   evt.preventDefault();
-  resetForm.blur();
-  submitButton.blur();
   window.backend.upload(new FormData(formInfo), onLoadSuccess, onLoadError);
 };
 
