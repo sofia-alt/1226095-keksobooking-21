@@ -2,11 +2,10 @@ const path = require("path");
 
 module.exports = {
   entry: [
-    "./js/debounce.js",
+    "./js/utils.js",
     "./js/backend.js",
     "./js/filter.js",
     "./js/pin.js",
-    "./js/utils.js",
     "./js/form.js",
     "./js/photos.js",
     "./js/map.js",

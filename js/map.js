@@ -78,7 +78,7 @@ const getIsPageActive = () => {
 };
 
 const changeFilters = () => {
-  mapFilters.addEventListener(`change`, window.debounce(() => {
+  mapFilters.addEventListener(`change`, window.utils.debounce(() => {
     resetPins();
     window.card.closePopup();
     renderPins(window.filter.getFiltred(items, housingType.value, housingPrice.value, housingRooms.value, housingGuests.value, getHousingFeatures()));
