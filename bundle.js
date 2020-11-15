@@ -84,7 +84,7 @@ const getInstance = (onSuccess, onError) => {
         break;
 
       default:
-        error = `Cтатус ответа: : ` + xhr.status + ` ` + xhr.statusText;
+        error = `Cтатус ответа: : ${xhr.status} ${xhr.statusText}`;
     }
 
     if (error) {
@@ -276,6 +276,8 @@ window.pin = {
 /*! runtime requirements:  */
 
 
+const ESC_KEY = 27;
+
 const formInfo = document.querySelector(`.ad-form`);
 const fieldsetFormInfo = formInfo.getElementsByTagName(`fieldset`);
 const roomNumber = formInfo.querySelector(`#room_number`);
@@ -296,8 +298,6 @@ const errorPopup = document.querySelector(`#error`).content.querySelector(`.erro
 const successPopup = document.querySelector(`#success`).content.querySelector(`.success`);
 
 const submitButton = formInfo.querySelector(`.ad-form__submit`);
-
-const ESC_KEY = 27;
 
 const RoomValue = {
   ONE: 1,
@@ -369,7 +369,10 @@ const validateRooms = () => {
   }
 
   roomNumber.setCustomValidity(message);
+  roomNumber.reportValidity();
+
   capacity.setCustomValidity(``);
+  capacity.reportValidity();
 };
 
 const validateCapacity = () => {
@@ -387,23 +390,24 @@ const validateCapacity = () => {
     message = `Неверное количество гостей`;
   }
   capacity.setCustomValidity(message);
+  capacity.reportValidity();
+
   roomNumber.setCustomValidity(``);
+  roomNumber.reportValidity();
 };
 
-const addEventTitle = () => {
-  titleInput.addEventListener(`input`, () => {
-    let valueLength = titleInput.value.length;
+const validateTitle = () => {
+  let valueLength = titleInput.value.length;
 
-    if (valueLength < TitleLength.MIN_LENGTH) {
-      titleInput.setCustomValidity(`Ещё ` + (TitleLength.MIN_LENGTH - valueLength) + ` симв.`);
-    } else if (valueLength > TitleLength.MAX_LENGTH) {
-      titleInput.setCustomValidity(`Удалите лишние ` + (valueLength - TitleLength.MAX_LENGTH) + ` симв.`);
-    } else {
-      titleInput.setCustomValidity(``);
-    }
+  if (valueLength < TitleLength.MIN_LENGTH) {
+    titleInput.setCustomValidity(`Ещё ` + (TitleLength.MIN_LENGTH - valueLength) + ` симв.`);
+  } else if (valueLength > TitleLength.MAX_LENGTH) {
+    titleInput.setCustomValidity(`Удалите лишние ` + (valueLength - TitleLength.MAX_LENGTH) + ` симв.`);
+  } else {
+    titleInput.setCustomValidity(``);
+  }
 
-    titleInput.reportValidity();
-  });
+  titleInput.reportValidity();
 };
 
 const validateTimein = () => {
@@ -422,9 +426,22 @@ const validateHousingType = () => {
   const errorMessage = priceHousingValue < min ? message : ``;
 
   priceHousing.setCustomValidity(errorMessage);
+  priceHousing.reportValidity();
 };
 
 const addEventFrom = () => {
+
+  formInfo.addEventListener(`input`, (evt) => {
+    switch (evt.target.id) {
+      case titleInput.id:
+        validateTitle();
+        break;
+      case priceHousing.id:
+        validateHousingType();
+        break;
+    }
+  });
+
   formInfo.addEventListener(`change`, (evt) => {
     switch (evt.target.id) {
       case roomNumber.id:
@@ -440,13 +457,9 @@ const addEventFrom = () => {
         validateTimein();
         break;
       case typeHousing.id:
-      case priceHousing.id:
         validateHousingType();
-        initHousingValidationInfo();
         break;
     }
-
-    formInfo.reportValidity();
   });
 };
 
@@ -544,7 +557,6 @@ const init = () => {
   initHousingValidationInfo();
   reset();
   addEventFrom();
-  addEventTitle();
 
   validateRooms();
   validateCapacity();
@@ -569,7 +581,7 @@ window.form = {
 
 
 const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
-const DEFAULT_PICTURES = `img/muffin-grey.svg`;
+const DEFAULT_PICTURE = `img/muffin-grey.svg`;
 
 const fileChooserAvatar = document.querySelector(`.ad-form__field input[type=file]`);
 const previewAvatar = document.querySelector(`.ad-form-header__preview img`);
@@ -592,7 +604,7 @@ const loadPreviewHouse = (result) => {
 
 const reset = () => {
   imgHouse.remove();
-  previewAvatar.src = DEFAULT_PICTURES;
+  previewAvatar.src = DEFAULT_PICTURE;
 };
 
 const onLoadChange = (evt, cb) => {
@@ -783,7 +795,6 @@ const StartLocationMainPin = {
 };
 
 const pin = () => {
-
   pinMain.addEventListener(`keydown`, () => {
     if (!window.map.getIsPageActive()) {
       window.map.activate();
@@ -855,8 +866,8 @@ const pin = () => {
 };
 
 const getAddress = (offsetLeft, offsetTop) => {
-  let valueX = offsetLeft + partSizeWidth;
-  let valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : SizeMainPin.FULL_HEIGHT);
+  const valueX = offsetLeft + partSizeWidth;
+  const valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : SizeMainPin.FULL_HEIGHT);
 
   return {
     valueX, valueY
@@ -889,8 +900,9 @@ window.move = {
 /*! runtime requirements:  */
 
 
-const popupTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const ESC_KEY = 27;
+
+const popupTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 
 const OfferType = {
   FLAT: `flat`,

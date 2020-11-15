@@ -1,5 +1,7 @@
 "use strict";
 
+const ESC_KEY = 27;
+
 const formInfo = document.querySelector(`.ad-form`);
 const fieldsetFormInfo = formInfo.getElementsByTagName(`fieldset`);
 const roomNumber = formInfo.querySelector(`#room_number`);
@@ -20,8 +22,6 @@ const errorPopup = document.querySelector(`#error`).content.querySelector(`.erro
 const successPopup = document.querySelector(`#success`).content.querySelector(`.success`);
 
 const submitButton = formInfo.querySelector(`.ad-form__submit`);
-
-const ESC_KEY = 27;
 
 const RoomValue = {
   ONE: 1,
@@ -93,7 +93,10 @@ const validateRooms = () => {
   }
 
   roomNumber.setCustomValidity(message);
+  roomNumber.reportValidity();
+
   capacity.setCustomValidity(``);
+  capacity.reportValidity();
 };
 
 const validateCapacity = () => {
@@ -111,23 +114,24 @@ const validateCapacity = () => {
     message = `Неверное количество гостей`;
   }
   capacity.setCustomValidity(message);
+  capacity.reportValidity();
+
   roomNumber.setCustomValidity(``);
+  roomNumber.reportValidity();
 };
 
-const addEventTitle = () => {
-  titleInput.addEventListener(`input`, () => {
-    let valueLength = titleInput.value.length;
+const validateTitle = () => {
+  let valueLength = titleInput.value.length;
 
-    if (valueLength < TitleLength.MIN_LENGTH) {
-      titleInput.setCustomValidity(`Ещё ` + (TitleLength.MIN_LENGTH - valueLength) + ` симв.`);
-    } else if (valueLength > TitleLength.MAX_LENGTH) {
-      titleInput.setCustomValidity(`Удалите лишние ` + (valueLength - TitleLength.MAX_LENGTH) + ` симв.`);
-    } else {
-      titleInput.setCustomValidity(``);
-    }
+  if (valueLength < TitleLength.MIN_LENGTH) {
+    titleInput.setCustomValidity(`Ещё ` + (TitleLength.MIN_LENGTH - valueLength) + ` симв.`);
+  } else if (valueLength > TitleLength.MAX_LENGTH) {
+    titleInput.setCustomValidity(`Удалите лишние ` + (valueLength - TitleLength.MAX_LENGTH) + ` симв.`);
+  } else {
+    titleInput.setCustomValidity(``);
+  }
 
-    titleInput.reportValidity();
-  });
+  titleInput.reportValidity();
 };
 
 const validateTimein = () => {
@@ -146,9 +150,22 @@ const validateHousingType = () => {
   const errorMessage = priceHousingValue < min ? message : ``;
 
   priceHousing.setCustomValidity(errorMessage);
+  priceHousing.reportValidity();
 };
 
 const addEventFrom = () => {
+
+  formInfo.addEventListener(`input`, (evt) => {
+    switch (evt.target.id) {
+      case titleInput.id:
+        validateTitle();
+        break;
+      case priceHousing.id:
+        validateHousingType();
+        break;
+    }
+  });
+
   formInfo.addEventListener(`change`, (evt) => {
     switch (evt.target.id) {
       case roomNumber.id:
@@ -164,13 +181,9 @@ const addEventFrom = () => {
         validateTimein();
         break;
       case typeHousing.id:
-      case priceHousing.id:
         validateHousingType();
-        initHousingValidationInfo();
         break;
     }
-
-    formInfo.reportValidity();
   });
 };
 
@@ -268,7 +281,6 @@ const init = () => {
   initHousingValidationInfo();
   reset();
   addEventFrom();
-  addEventTitle();
 
   validateRooms();
   validateCapacity();

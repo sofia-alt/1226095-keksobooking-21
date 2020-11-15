@@ -1,7 +1,8 @@
 "use strict";
 
-const popupTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const ESC_KEY = 27;
+
+const popupTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 
 const OfferType = {
   FLAT: `flat`,

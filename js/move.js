@@ -30,7 +30,6 @@ const StartLocationMainPin = {
 };
 
 const pin = () => {
-
   pinMain.addEventListener(`keydown`, () => {
     if (!window.map.getIsPageActive()) {
       window.map.activate();
@@ -102,8 +101,8 @@ const pin = () => {
 };
 
 const getAddress = (offsetLeft, offsetTop) => {
-  let valueX = offsetLeft + partSizeWidth;
-  let valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : SizeMainPin.FULL_HEIGHT);
+  const valueX = offsetLeft + partSizeWidth;
+  const valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : SizeMainPin.FULL_HEIGHT);
 
   return {
     valueX, valueY
