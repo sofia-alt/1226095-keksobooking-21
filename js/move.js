@@ -6,11 +6,7 @@ const pinMain = document.querySelector(`.map__pin--main`);
 const SizeMainPin = {
   WIDTH: 65,
   HEIGHT: 65,
-<<<<<<< HEAD
   FULL_HEIGHT: 87
-=======
-  FULLHEIGHT: 87
->>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 };
 
 const partSizeWidth = Math.floor(SizeMainPin.WIDTH / 2);
@@ -24,7 +20,6 @@ const LocationCheckpoint = {
 const LocationLimit = {
   X_MIN: LocationCheckpoint.X_MIN - partSizeWidth,
   X_MAX: mapOverlay.offsetWidth - partSizeWidth,
-<<<<<<< HEAD
   Y_MIN: LocationCheckpoint.Y_MIN - SizeMainPin.FULL_HEIGHT,
   Y_MAX: LocationCheckpoint.Y_MAX - SizeMainPin.FULL_HEIGHT
 };
@@ -40,28 +35,12 @@ const pin = () => {
       window.map.activate();
     }
   });
-=======
-  Y_MIN: LocationCheckpoint.Y_MIN - SizeMainPin.FULLHEIGHT,
-  Y_MAX: LocationCheckpoint.Y_MAX - SizeMainPin.FULLHEIGHT
-};
-
-const StartLocationMainPin = {
-  left: 570,
-  top: 375
-};
-
-const pin = () => {
->>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 
   pinMain.addEventListener(`mousedown`, (evt) => {
     evt.preventDefault();
 
     if (!window.map.getIsPageActive()) {
-<<<<<<< HEAD
       window.map.activate();
-=======
-      window.map.activateMap();
->>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
     }
 
     let startCoords = {
@@ -122,13 +101,8 @@ const pin = () => {
 };
 
 const getAddress = (offsetLeft, offsetTop) => {
-<<<<<<< HEAD
   const valueX = offsetLeft + partSizeWidth;
   const valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : SizeMainPin.FULL_HEIGHT);
-=======
-  let valueX = offsetLeft + partSizeWidth;
-  let valueY = offsetTop + (!window.map.getIsPageActive() ? Math.floor(SizeMainPin.HEIGHT / 2) : SizeMainPin.FULLHEIGHT);
->>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 
   return {
     valueX, valueY
@@ -136,13 +110,8 @@ const getAddress = (offsetLeft, offsetTop) => {
 };
 
 const resetMainPin = () => {
-<<<<<<< HEAD
   pinMain.style.left = StartLocationMainPin.LEFT + `px`;
   pinMain.style.top = StartLocationMainPin.TOP + `px`;
-=======
-  pinMain.style.left = StartLocationMainPin.left + `px`;
-  pinMain.style.top = StartLocationMainPin.top + `px`;
->>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 };
 
 const updateAddress = () => {

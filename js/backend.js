@@ -1,12 +1,7 @@
 "use strict";
 
-<<<<<<< HEAD
 const URL_LOAD = `https://21.javascript.pages.academy/keksobooking/data`;
 const URL_UPLOAD = `https://21.javascript.pages.academy/keksobooking`;
-=======
-const URLLOAD = `https://21.javascript.pages.academy/keksobooking/data`;
-const URLUPLOAD = `https://21.javascript.pages.academy/keksobooking`;
->>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 
 const TIMEOUT_IN_MS = 10000;
 
@@ -43,11 +38,7 @@ const getInstance = (onSuccess, onError) => {
         break;
 
       default:
-<<<<<<< HEAD
         error = `Cтатус ответа: : ${xhr.status} ${xhr.statusText}`;
-=======
-        error = `Cтатус ответа: : ` + xhr.status + ` ` + xhr.statusText;
->>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
     }
 
     if (error) {
@@ -69,22 +60,14 @@ const getInstance = (onSuccess, onError) => {
 const load = (onSuccess, onError) => {
   const xhr = getInstance(onSuccess, onError);
 
-<<<<<<< HEAD
   xhr.open(HttpRequest.GET, URL_LOAD);
-=======
-  xhr.open(HttpRequest.GET, URLLOAD);
->>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
   xhr.send();
 };
 
 const upload = (data, onSuccess, onError) => {
   const xhr = getInstance(onSuccess, onError);
 
-<<<<<<< HEAD
   xhr.open(HttpRequest.POST, URL_UPLOAD);
-=======
-  xhr.open(HttpRequest.POST, URLUPLOAD);
->>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
   xhr.send(data);
 };
 
