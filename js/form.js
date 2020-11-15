@@ -1,7 +1,10 @@
 "use strict";
 
+<<<<<<< HEAD
 const ESC_KEY = 27;
 
+=======
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 const formInfo = document.querySelector(`.ad-form`);
 const fieldsetFormInfo = formInfo.getElementsByTagName(`fieldset`);
 const roomNumber = formInfo.querySelector(`#room_number`);
@@ -21,7 +24,13 @@ const resetForm = formInfo.querySelector(`.ad-form__reset`);
 const errorPopup = document.querySelector(`#error`).content.querySelector(`.error`);
 const successPopup = document.querySelector(`#success`).content.querySelector(`.success`);
 
+<<<<<<< HEAD
 const submitButton = formInfo.querySelector(`.ad-form__submit`);
+=======
+const ESC_KEY = 27;
+
+let popupMessage = null;
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 
 const RoomValue = {
   ONE: 1,
@@ -34,7 +43,11 @@ const CapacityValue = {
   ONE: 1,
   TWO: 2,
   THREE: 3,
+<<<<<<< HEAD
   ZERO: 0
+=======
+  NOTGUEST: 0
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 };
 
 const TitleLength = {
@@ -50,7 +63,10 @@ const MinPriceHousing = {
 };
 
 let housingValidationInfo;
+<<<<<<< HEAD
 let popupMessage = null;
+=======
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 
 const initHousingValidationInfo = () => {
   housingValidationInfo = {
@@ -86,17 +102,27 @@ const validateRooms = () => {
     message = `Неверное количество комнат`;
   } else if (roomValue === RoomValue.TWO && !(capacityValue === CapacityValue.ONE || capacityValue === CapacityValue.TWO)) {
     message = `Неверное количество комнат`;
+<<<<<<< HEAD
   } else if (roomValue === RoomValue.THREE && capacityValue === CapacityValue.ZERO) {
     message = `Неверное количество комнат`;
   } else if (roomValue === RoomValue.HUNDER && capacityValue !== CapacityValue.ZERO) {
+=======
+  } else if (roomValue === RoomValue.THREE && capacityValue === CapacityValue.NOTGUEST) {
+    message = `Неверное количество комнат`;
+  } else if (roomValue === RoomValue.HUNDER && capacityValue !== CapacityValue.NOTGUEST) {
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
     message = `Неверное количество комнат`;
   }
 
   roomNumber.setCustomValidity(message);
+<<<<<<< HEAD
   roomNumber.reportValidity();
 
   capacity.setCustomValidity(``);
   capacity.reportValidity();
+=======
+  capacity.setCustomValidity(``);
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 };
 
 const validateCapacity = () => {
@@ -110,6 +136,7 @@ const validateCapacity = () => {
     message = `Неверное количество гостей`;
   } else if (capacityValue === CapacityValue.THREE && roomValue !== RoomValue.THREE) {
     message = `Неверное количество гостей`;
+<<<<<<< HEAD
   } else if (capacityValue === CapacityValue.ZERO && roomValue !== RoomValue.HUNDER) {
     message = `Неверное количество гостей`;
   }
@@ -132,6 +159,29 @@ const validateTitle = () => {
   }
 
   titleInput.reportValidity();
+=======
+  } else if (capacityValue === CapacityValue.NOTGUEST && roomValue !== RoomValue.HUNDER) {
+    message = `Неверное количество гостей`;
+  }
+  capacity.setCustomValidity(message);
+  roomNumber.setCustomValidity(``);
+};
+
+const addEventTitle = () => {
+  titleInput.addEventListener(`input`, function () {
+    let valueLength = titleInput.value.length;
+
+    if (valueLength < TitleLength.MIN_LENGTH) {
+      titleInput.setCustomValidity(`Ещё ` + (TitleLength.MIN_LENGTH - valueLength) + ` симв.`);
+    } else if (valueLength > TitleLength.MAX_LENGTH) {
+      titleInput.setCustomValidity(`Удалите лишние ` + (valueLength - TitleLength.MAX_LENGTH) + ` симв.`);
+    } else {
+      titleInput.setCustomValidity(``);
+    }
+
+    titleInput.reportValidity();
+  });
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 };
 
 const validateTimein = () => {
@@ -150,6 +200,7 @@ const validateHousingType = () => {
   const errorMessage = priceHousingValue < min ? message : ``;
 
   priceHousing.setCustomValidity(errorMessage);
+<<<<<<< HEAD
   priceHousing.reportValidity();
 };
 
@@ -167,6 +218,12 @@ const addEventFrom = () => {
   });
 
   formInfo.addEventListener(`change`, (evt) => {
+=======
+};
+
+const addEventFrom = () => {
+  formInfo.addEventListener(`change`, function (evt) {
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
     switch (evt.target.id) {
       case roomNumber.id:
         validateRooms();
@@ -184,6 +241,11 @@ const addEventFrom = () => {
         validateHousingType();
         break;
     }
+<<<<<<< HEAD
+=======
+
+    formInfo.reportValidity();
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
   });
 };
 
@@ -196,7 +258,10 @@ const activate = () => {
 const resetInput = () => {
   formInfo.reset();
   window.move.updateAddress();
+<<<<<<< HEAD
   priceHousing.placeholder = MinPriceHousing.FLAT;
+=======
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 };
 
 const reset = () => {
@@ -260,10 +325,15 @@ const removeEventMessage = () => {
 };
 
 const onFormSubmit = (evt) => {
+<<<<<<< HEAD
   evt.preventDefault();
   resetForm.blur();
   submitButton.blur();
   window.backend.upload(new FormData(formInfo), onLoadSuccess, onLoadError);
+=======
+  window.backend.upload(new FormData(formInfo), onLoadSuccess, onLoadError);
+  evt.preventDefault();
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 };
 
 resetForm.addEventListener(`click`, () => {
@@ -281,6 +351,10 @@ const init = () => {
   initHousingValidationInfo();
   reset();
   addEventFrom();
+<<<<<<< HEAD
+=======
+  addEventTitle();
+>>>>>>> 1a389f828d715c05e26a26ce2a894bbe7d6fde89
 
   validateRooms();
   validateCapacity();
